@@ -42,11 +42,11 @@ brief - returns a pointer to a 32 bit aligned address that contains the address 
  - The futex is used for the slow path,  and it operates on a shared 32 bit unsigned integer as done in the ParkingLot class where it queue threads that waits on a lock by its address.
  - first we store the address of the lock in an unsigned integer type guaranteed to be large enough to hold a pointer.
  - the expression `lockptr &=  ~(sizeof(uint32_t) -  1)` 
-	 - Create a mask for the bits that from the sizeof(uint32_t) which is a power of two decrement one, 
+	 - Create a mask which aligns as address to the nearest 32-bit boundary by decrementing 1 from 
     	 
 
 > Written with [StackEdit](https://stackedit.io/).
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTAzMTE1OTI4LDI1MTI5OTY0MSwyMDkwMz
-E3NDIwXX0=
+eyJoaXN0b3J5IjpbMTEwOTY0ODM5NSwyNTEyOTk2NDEsMjA5MD
+MxNzQyMF19
 -->
