@@ -28,10 +28,10 @@ I will explain some of the less intuitive and tricky parts of the code in detail
 
 ### Methods
 In very high level, the logic is divided to a fast path of try acquiring the lock bit with a compare exchange operation, and a slow path where the compare exchange fails and some other strategies are tried, where the least option is to use futex to put the thread to sleep until its woken up.
-The slow path implementation has some very interesting detai
+The slow path implementation has some very interesting details 
 
 > Written with [StackEdit](https://stackedit.io/).
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3NzA0NTA1NTQsMjUxMjk5NjQxLDIwOT
-AzMTc0MjBdfQ==
+eyJoaXN0b3J5IjpbLTk4MzA3MTQ3OSwyNTEyOTk2NDEsMjA5MD
+MxNzQyMF19
 -->
