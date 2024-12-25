@@ -43,10 +43,11 @@ brief - returns a pointer to a 32 bit aligned address that contains the address 
  - first we store the address of the lock in an unsigned integer type guaranteed to be large enough to hold a pointer.
  - the expression `lockptr &=  ~(sizeof(uint32_t) -  1)` 
 	 - Create a mask which aligns an address to the nearest 32-bit boundary by decrementing 1 from a power of two (the sizeof()) and flipping its bits e.g. 0xb...11111100 .
+	 - `lockptr &` - Apply the the mask to clear to lowest bits of lockptr, this rounds lockptr down to the nearest
     	 
 
 > Written with [StackEdit](https://stackedit.io/).
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjAyMzE0MDMzNiwyNTEyOTk2NDEsMjA5MD
+eyJoaXN0b3J5IjpbMTE1MTM2OTA0OCwyNTEyOTk2NDEsMjA5MD
 MxNzQyMF19
 -->
