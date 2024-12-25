@@ -38,11 +38,11 @@ The slow path implementation has some very interesting details.
 - The return type is defined as follows
      `<template <typename> class Atom = std::atomic>
         	  using Futex = Atom<std::uint32_t>;`
- -  
+ - The futex is used for the slow path,  
     	 
 
 > Written with [StackEdit](https://stackedit.io/).
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE5MDAxMzA0MjUsMjUxMjk5NjQxLDIwOT
-AzMTc0MjBdfQ==
+eyJoaXN0b3J5IjpbLTMyMjQ1OTA5NywyNTEyOTk2NDEsMjA5MD
+MxNzQyMF19
 -->
