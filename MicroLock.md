@@ -27,10 +27,10 @@ I will explain some of the less intuitive and tricky parts of the code in detail
 	- The `~` operator flips all bits, creating a mask for the user data bits.
 
 ### Methods
-In very high level, the logic is divided to a  to try acquiring the lock bit with a compare exchange operation, the more complex logic is when compare exchange fails  
+In very high level, the logic is divided to a fast path of try acquiring the lock bit with a compare exchange operation, and a slow path where the compare exchange fails and some other strategies are tried, where the least option is to use futex to put the thread to sl
 
 > Written with [StackEdit](https://stackedit.io/).
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE5OTYxNTI3OTksMjUxMjk5NjQxLDIwOT
+eyJoaXN0b3J5IjpbLTE3NDk3MDg5MjksMjUxMjk5NjQxLDIwOT
 AzMTc0MjBdfQ==
 -->
