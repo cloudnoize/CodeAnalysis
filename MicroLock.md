@@ -33,10 +33,12 @@ The slow path implementation has some very interesting details.
     inline  detail::Futex<>*  MicroLockCore::word() const  noexcept {
 	    uintptr_t lockptr = (uintptr_t)&lock_;
 		lockptr &=  ~(sizeof(uint32_t) -  1);
-	    return (detail::Futex<>*)lockptr; }
+	    return (detail::Futex<>*)lockptr; 
+	}
+- The return type 
 
 > Written with [StackEdit](https://stackedit.io/).
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjAxNDIxMjkzMCwyNTEyOTk2NDEsMjA5MD
-MxNzQyMF19
+eyJoaXN0b3J5IjpbLTE5MzE3NzYwMzAsMjUxMjk5NjQxLDIwOT
+AzMTc0MjBdfQ==
 -->
