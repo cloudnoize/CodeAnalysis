@@ -26,7 +26,10 @@ I will explain some of the less intuitive and tricky parts of the code in detail
 - `static  constexpr  uint8_t  kDataBits  =  static_cast<uint8_t>(~kLockBits)` - mask for the user data bits.
 	- The `~` operator flips all bits, creating a mask for the user data bits.
 
+### Methods
+
+
 > Written with [StackEdit](https://stackedit.io/).
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjA5MDMxNzQyMF19
+eyJoaXN0b3J5IjpbMjUxMjk5NjQxLDIwOTAzMTc0MjBdfQ==
 -->
