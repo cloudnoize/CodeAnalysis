@@ -35,17 +35,14 @@ The slow path implementation has some very interesting details.
 		lockptr &=  ~(sizeof(uint32_t) -  1);
 	    return (detail::Futex<>*)lockptr; 
 	}
-- The return type is template
-	 
-
-   
-
-     <template <typename> class Atom = std::atomic>
-        	  using Futex = Atom<std::uint32_t>;
+- The return type is defined as follows
+     `<template <typename> class Atom = std::atomic>
+        	  using Futex = Atom<std::uint32_t>;`
+ -  
     	 
 
 > Written with [StackEdit](https://stackedit.io/).
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTI3MjY4MTgxMywyNTEyOTk2NDEsMjA5MD
-MxNzQyMF19
+eyJoaXN0b3J5IjpbLTE5MDAxMzA0MjUsMjUxMjk5NjQxLDIwOT
+AzMTc0MjBdfQ==
 -->
