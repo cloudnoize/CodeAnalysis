@@ -40,11 +40,13 @@ brief - returns a pointer to a 32 bit aligned address that contains the address 
      `<template <typename> class Atom = std::atomic>
         	  using Futex = Atom<std::uint32_t>;`
  - The futex is used for the slow path,  and it operates on a shared 32 bit unsigned integer as done in the ParkingLot class where it queue threads that waits on a lock by its address.
- - 
+ - first we store the address of the lock in an unsigned integer type guaranteed to be large enough to hold a pointer.
+ - the expression `lockptr &=  ~(sizeof(uint32_t) -  1)` 
+	 - 
     	 
 
 > Written with [StackEdit](https://stackedit.io/).
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQ2OTk3MTAzMywyNTEyOTk2NDEsMjA5MD
+eyJoaXN0b3J5IjpbMjA3Mjg0Mzg2NywyNTEyOTk2NDEsMjA5MD
 MxNzQyMF19
 -->
