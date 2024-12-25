@@ -35,6 +35,7 @@ The slow path implementation has some very interesting details.
 		lockptr &=  ~(sizeof(uint32_t) -  1);
 	    return (detail::Futex<>*)lockptr; 
 	}
+brief - returns a pointer to a 32 bit aligned address that contains the address of the lock.
 - The return type is defined as follows
      `<template <typename> class Atom = std::atomic>
         	  using Futex = Atom<std::uint32_t>;`
@@ -43,6 +44,6 @@ The slow path implementation has some very interesting details.
 
 > Written with [StackEdit](https://stackedit.io/).
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTMyMjQ1OTA5NywyNTEyOTk2NDEsMjA5MD
+eyJoaXN0b3J5IjpbMTAzNTA4NzQ0NywyNTEyOTk2NDEsMjA5MD
 MxNzQyMF19
 -->
