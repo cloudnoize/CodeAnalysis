@@ -49,6 +49,5 @@ brief - returns a pointer to a 32 bit aligned address that contains the address 
 
 > Written with [StackEdit](https://stackedit.io/).
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTY5MzcxMjgwMiwyNTEyOTk2NDEsMjA5MD
-MxNzQyMF19
+eyJoaXN0b3J5IjpbLTY5MzcxMjgwMl19
 -->
