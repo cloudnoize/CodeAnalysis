@@ -27,9 +27,10 @@ I will explain some of the less intuitive and tricky parts of the code in detail
 	- The `~` operator flips all bits, creating a mask for the user data bits.
 
 ### Methods
-
+In very high level, the expected logic is for the lock to 
 
 > Written with [StackEdit](https://stackedit.io/).
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjUxMjk5NjQxLDIwOTAzMTc0MjBdfQ==
+eyJoaXN0b3J5IjpbMTY4ODAyODQxNSwyNTEyOTk2NDEsMjA5MD
+MxNzQyMF19
 -->
