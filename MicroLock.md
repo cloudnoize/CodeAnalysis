@@ -27,10 +27,10 @@ I will explain some of the less intuitive and tricky parts of the code in detail
 	- The `~` operator flips all bits, creating a mask for the user data bits.
 
 ### Methods
-In very high level, the expected logic is for the lock to 
+In very high level, the logic is divided to a  to try acquiring the lock bit with a compare exchange operation, the more complex logic is when compare exchange fails  
 
 > Written with [StackEdit](https://stackedit.io/).
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTY4ODAyODQxNSwyNTEyOTk2NDEsMjA5MD
-MxNzQyMF19
+eyJoaXN0b3J5IjpbLTE5OTYxNTI3OTksMjUxMjk5NjQxLDIwOT
+AzMTc0MjBdfQ==
 -->
