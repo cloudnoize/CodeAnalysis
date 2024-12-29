@@ -30,6 +30,7 @@ I will explain some of the less intuitive and tricky parts of the code in detail
 In very high level, the logic is divided to a fast path of try acquiring the lock bit with a compare exchange operation, and a slow path where the compare exchange fails and some other strategies are tried, where the least option is to use `futex` to put the thread to sleep until its woken up.
 The slow path implementation has some very interesting details. 
 
+---
 
 
     inline  detail::Futex<>*  MicroLockCore::word() const  noexcept {
@@ -47,9 +48,11 @@ brief - returns a pointer to a 32 bit aligned address that contains the address 
 	 - Create a mask which aligns an address to the nearest 32-bit boundary by decrementing 1 from a power of two (the sizeof()) and flipping its bits e.g. 0xb...11111100 .
 	 - `lockptr &` - Apply the the mask to clear to lowest bits of lockptr, this rounds lockptr down to the nearest uint32_t boundary.
 - return the aligned address, casted to the Futex*. 
+- --
+
     	 
 
 > Written with [StackEdit](https://stackedit.io/).
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTA0NjQxMzAsLTY5MzcxMjgwMl19
+eyJoaXN0b3J5IjpbLTIwOTYwNTc1NjYsLTY5MzcxMjgwMl19
 -->
