@@ -62,8 +62,9 @@ The slow path implementation has some very interesting details.
     	 
 *Analysis*
 
- - The expression `(unsigned)((uintptr_t)&lock_ - (uintptr_t)word())` casts the lock and word addresses to numeric value, 
+ - The expression `(unsigned)((uintptr_t)&lock_ - (uintptr_t)word())` casts the lock and word addresses to numeric value and performs subtraction to determine the byte offset of the lock within the word.
+ - the next expression determines how many bits should be o 
 > Written with [StackEdit](https://stackedit.io/).
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEyODU4NDk2NjMsLTY5MzcxMjgwMl19
+eyJoaXN0b3J5IjpbMTAwODkwODU5OCwtNjkzNzEyODAyXX0=
 -->
