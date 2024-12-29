@@ -33,12 +33,13 @@ The slow path implementation has some very interesting details.
 ---
 
 
+
     inline  detail::Futex<>*  MicroLockCore::word() const  noexcept {
 	    uintptr_t lockptr = (uintptr_t)&lock_;
 		lockptr &=  ~(sizeof(uint32_t) -  1);
 	    return (detail::Futex<>*)lockptr; 
 	}
-brief - returns a pointer to a 32 bit aligned address that contains the address of the lock.
+
 - The return type is defined as follows
      `<template <typename> class Atom = std::atomic>
         	  using Futex = Atom<std::uint32_t>;`
@@ -49,10 +50,18 @@ brief - returns a pointer to a 32 bit aligned address that contains the address 
 	 - `lockptr &` - Apply the the mask to clear to lowest bits of lockptr, this rounds lockptr down to the nearest uint32_t boundary.
 - return the aligned address, casted to the Futex*. 
 - --
+  
 
+    inline  unsigned  MicroLockCore::baseShift() const  noexcept {
+	    unsigned offset_bytes = (unsigned)((uintptr_t)&lock_ - (uintptr_t)word());
+	   
+	    return  static_cast<unsigned>( 
+	    kIsLittleEndian ?  CHAR_BIT  * offset_byte
+	    :  CHAR_BIT  * (sizeof(uint32_t) - offset_bytes -  1));
+    }
     	 
 
 > Written with [StackEdit](https://stackedit.io/).
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwOTYwNTc1NjYsLTY5MzcxMjgwMl19
+eyJoaXN0b3J5IjpbODI3NzQ0NDQ2LC02OTM3MTI4MDJdfQ==
 -->
