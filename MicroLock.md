@@ -64,10 +64,10 @@ The slow path implementation has some very interesting details.
 
  - The expression `(unsigned)((uintptr_t)&lock_ - (uintptr_t)word())` casts the lock and word addresses to numeric value and performs subtraction to determine the byte offset of the lock within the word.
  - The next expression determines how many bits should be shifted in order to reach the first **bit** of the lock,  it got me a little confused as I thought that the byte difference is constant regardless of the architecture i.e. little vs big endian. hence the bit shift should be multiplication of the byte difference and the bits per byte (CHAR_BIT). 
- 
+ But apparently the bits are numbered differently 
 
 
 > Written with [StackEdit](https://stackedit.io/).
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTI5Nzk2NzQ3LC02OTM3MTI4MDJdfQ==
+eyJoaXN0b3J5IjpbMTkyNDI1OTc3LC02OTM3MTI4MDJdfQ==
 -->
