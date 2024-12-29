@@ -40,7 +40,7 @@ The slow path implementation has some very interesting details.
 	    return (detail::Futex<>*)lockptr; 
 	}
 *Analysis* 
-- The return type is defined as follows
+ - The return type is defined as follows
      `<template <typename> class Atom = std::atomic>
         	  using Futex = Atom<std::uint32_t>;`
  - The futex is used for the slow path,  and it operates on a shared 32 bit unsigned integer as done in the ParkingLot class where it queue threads that waits on a lock by its address.
@@ -48,9 +48,9 @@ The slow path implementation has some very interesting details.
  - the expression `lockptr &=  ~(sizeof(uint32_t) -  1)` 
 	 - Create a mask which aligns an address to the nearest 32-bit boundary by decrementing 1 from a power of two (the sizeof()) and flipping its bits e.g. 0xb...11111100 .
 	 - `lockptr &` - Apply the the mask to clear to lowest bits of lockptr, this rounds lockptr down to the nearest uint32_t boundary.
-- return the aligned address, casted to the Futex*. 
-- --
-  **baseShift()** - calcualtes
+ - return the aligned address, casted to the Futex*. 
+ - --
+  **baseShift()** - calculates how many bits should be shifted from the beginning of the word to reach the first bit of the lock. 
 
     inline  unsigned  MicroLockCore::baseShift() const  noexcept {
 	    unsigned offset_bytes = (unsigned)((uintptr_t)&lock_ - (uintptr_t)word());
@@ -60,8 +60,10 @@ The slow path implementation has some very interesting details.
 	    :  CHAR_BIT  * (sizeof(uint32_t) - offset_bytes -  1));
     }
     	 
+*Analysis*
 
+ - 
 > Written with [StackEdit](https://stackedit.io/).
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTc5MzEwNDkxMSwtNjkzNzEyODAyXX0=
+eyJoaXN0b3J5IjpbLTM1MzIxNTkzMSwtNjkzNzEyODAyXX0=
 -->
