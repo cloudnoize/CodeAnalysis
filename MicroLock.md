@@ -65,70 +65,47 @@ The slow path implementation has some very interesting details.
  - The expression `(unsigned)((uintptr_t)&lock_ - (uintptr_t)word())` casts the lock and word addresses to numeric value and performs subtraction to determine the byte offset of the lock within the word.
  - The next expression determines how many bits should be shifted in order to reach the first **bit** of the lock,  it got me a little confused as I thought that the byte difference is constant regardless of the architecture i.e. little vs big endian. hence the bit shift should be multiplication of the byte difference and the bits per byte (CHAR_BIT). 
  But the calculation determines the bit position of the lock which is depends on how to system orders the bytes.
-### Little-Endian vs. Big-Endian Memory Layout:
+ After some 
 
-Consider a `uint32_t` (4 bytes = 32 bits) stored in memory at address `0x4`:
-
-#### Little-Endian:
-
--   The **least significant byte (LSB)** is stored first, at the lowest address (`0x4`).
--   Memory layout:
-    
-    vbnet
-    
-    Copy code
-    
-    `Address:     0x4      0x5      0x6      0x7
-    Byte Order: [LSB]    [Byte1]  [Byte2]  [MSB]
-    Bits:       [0-7]    [8-15]   [16-23]  [24-31]` 
-    
--   In little-endian, the byte at address `0x6` (where `lock_` is) corresponds to **bits 16–23** of the word starting at `0x4`. Thus, the **bit shift** to reach the lock's position is:
-    
-    makefile
-    
-    Copy code
-    
-    `Shift = 8 * offset_bytes = 8 * 2 = 16 bits` 
-    
-
-#### Big-Endian:
-
--   The **most significant byte (MSB)** is stored first, at the lowest address (`0x4`).
--   Memory layout:
-    
-    vbnet
-    
-    Copy code
-    
-    `Address:     0x4      0x5      0x6      0x7
-    Byte Order: [MSB]    [Byte1]  [Byte2]  [LSB]
-    Bits:       [24-31]  [16-23]  [8-15]   [0-7]` 
-    
--   In big-endian, the byte at address `0x6` (where `lock_` is) corresponds to **bits 8–15** of the word starting at `0x4`. To calculate the bit shift, you reverse the byte offset order:
-    
-    c
-    
-    Copy code
-    
-    `Shift = 8 * (sizeof(uint32_t) - offset_bytes - 1)
-          = 8 * (4 - 2 - 1) = 8 bits` 
-    
-
-----------
-
-### Why is the Shift Different?
-
--   **Byte Offset is Absolute**: The lock is always **2 bytes away** from the start of the word. This does not depend on endianness.
-    
--   **Bit Interpretation is Endian-Dependent**: Endianness affects how the bytes are arranged within the word. The byte at `0x6` corresponds to **different bit positions** depending on whether the system is little-endian or big-endian:
-    
-    -   Little-endian: Bits 16–23.
-    -   Big-endian: Bits 8–15.
-
-Thus, the shift calculation accounts for **bit position within the word**, which changes with the memory layout.
+> **Little-Endian vs. Big-Endian Memory Layout**  
+> Consider a `uint32_t` (4 bytes = 32 bits) stored in memory at address `0x4`:  
+> 
+> **Little-Endian**:  
+> The least significant byte (LSB) is stored first, at the lowest address (`0x4`).  
+> **Memory layout**:  
+> ```
+> Address:     0x4      0x5      0x6      0x7  
+> Byte Order: [LSB]    [Byte1]  [Byte2]  [MSB]  
+> Bits:       [0-7]    [8-15]   [16-23]  [24-31]  
+> ```
+> In little-endian, the byte at address `0x6` (where `lock_` is) corresponds to **bits 16–23** of the word starting at `0x4`.  
+> **Bit shift calculation**:  
+> ```
+> Shift = 8 * offset_bytes = 8 * 2 = 16 bits  
+> ```
+> 
+> **Big-Endian**:  
+> The most significant byte (MSB) is stored first, at the lowest address (`0x4`).  
+> **Memory layout**:  
+> ```
+> Address:     0x4      0x5      0x6      0x7  
+> Byte Order: [MSB]    [Byte1]  [Byte2]  [LSB]  
+> Bits:       [24-31]  [16-23]  [8-15]   [0-7]  
+> ```
+> In big-endian, the byte at address `0x6` (where `lock_` is) corresponds to **bits 8–15** of the word starting at `0x4`.  
+> **Bit shift calculation**:  
+> ```
+> Shift = 8 * (sizeof(uint32_t) - offset_bytes - 1)  
+>       = 8 * (4 - 2 - 1) = 8 bits  
+> ```
+> 
+> **Why is the Shift Different?**  
+> - **Byte Offset is Absolute**: The `lock_` is always **2 bytes** away from the start of the word (`0x4`). This does not depend on endianness.  
+> - **Bit Interpretation is Endian-Dependent**: Endianness affects how bytes are arranged in memory. The byte at `0x6` corresponds to **bits 16–23** in little-endian and **bits 8–15** in big-endian.  
+> Thus, the shift calculation accounts for the **bit position within the word**, which changes with the memory layout.
 
 
 > Written with [StackEdit](https://stackedit.io/).
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjExNTEyODEzMywtNjkzNzEyODAyXX0=
+eyJoaXN0b3J5IjpbMTYwNTI0MDI2NywtNjkzNzEyODAyXX0=
 -->
