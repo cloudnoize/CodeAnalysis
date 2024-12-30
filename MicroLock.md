@@ -105,7 +105,7 @@ The slow path implementation has some very interesting details.
 > Thus, the shift calculation accounts for the **bit position within the word**, which changes with the memory layout.
 
 ---
-heldBit() - Returns whether the lock is 
+**heldBit**() - Returns a mask 
     inline  unsigned  MicroLockCore::heldBit() const  noexcept {
 	    return  1U  << (baseShift() +  0);
     }
@@ -115,6 +115,6 @@ heldBit() - Returns whether the lock is
 > Written with [StackEdit](https://stackedit.io/).
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE4NDI0MDQ5NzgsMTE3MjY5NTc0NiwtNj
+eyJoaXN0b3J5IjpbLTE4NjM0NDM5MzIsMTE3MjY5NTc0NiwtNj
 kzNzEyODAyXX0=
 -->
