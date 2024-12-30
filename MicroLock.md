@@ -142,7 +142,5 @@ Now that we have all the infrastructure to access and test the lock bits, we can
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTM3NDU1NDM2MCw2MzY0NTQ2OTMsMjA1Mz
-Q5NzM1MiwtMTI5Nzc1OTA0NCwtMzA0MTA1NTY2LDU5NjM4OTQz
-MCwxMTcyNjk1NzQ2LC02OTM3MTI4MDJdfQ==
+eyJoaXN0b3J5IjpbMTM3NDU1NDM2MF19
 -->
