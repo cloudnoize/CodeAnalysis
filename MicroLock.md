@@ -129,7 +129,7 @@ The slow path implementation has some very interesting details.
 	    return  preservedBits  |  newBits;
     }
 
- - `word  &  ~(kDataBits  <<  shiftToByte)` recall that kDataBits is a uint8 mask for the 6 user bits, the mask is shifted to the location of the lock within the word. 
+ - `word  &  ~(kDataBits  <<  shiftToByte)` recall that kDataBits is a uint8 mask for the 6 user bits, the mask is shifted to the location of the lock within the word. within the parenthesis the result is a 32 bit unsigned mask, where 6 bits in the location of the user bits are lit. the `~` 
 
  
 
@@ -140,7 +140,7 @@ Now that we have all the infrastructure to access and test the lock bits, we can
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNjk1NDQxODk5LDIwNTM0OTczNTIsLTEyOT
-c3NTkwNDQsLTMwNDEwNTU2Niw1OTYzODk0MzAsMTE3MjY5NTc0
-NiwtNjkzNzEyODAyXX0=
+eyJoaXN0b3J5IjpbLTE0MTQyOTMwNDQsMjA1MzQ5NzM1MiwtMT
+I5Nzc1OTA0NCwtMzA0MTA1NTY2LDU5NjM4OTQzMCwxMTcyNjk1
+NzQ2LC02OTM3MTI4MDJdfQ==
 -->
