@@ -106,15 +106,24 @@ The slow path implementation has some very interesting details.
 
 ---
 **heldBit**() - Returns a mask which is used to test whether the lock is locked.
-    inline  unsigned  MicroLockCore::heldBit() const  noexcept {
-	    return  1U  << (baseShift() +  0);
-    }
-  
+   
 
+     inline  unsigned  MicroLockCore::heldBit() const  noexcept {
+    	    return  1U  << (baseShift() +  0);
+        }
+---
+
+    
+**waitBit()** - returns a mask 
+
+    inline  unsigned  MicroLockCore::waitBit() const  noexcept {
+        return  1U  << (baseShift() +  1);
+    }
 
 > Written with [StackEdit](https://stackedit.io/).
 
+
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIxMTQzNDUwMTAsMTE3MjY5NTc0NiwtNj
+eyJoaXN0b3J5IjpbLTE1NDIyMTM2ODEsMTE3MjY5NTc0NiwtNj
 kzNzEyODAyXX0=
 -->
