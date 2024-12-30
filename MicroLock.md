@@ -121,18 +121,20 @@ The slow path implementation has some very interesting details.
     }
     
 ---
+**encodeDataToWord()** - tores user data in the redundant bits of the lock.
 
     static  constexpr  uint32_t  encodeDataToWord(uint32_t  word, unsigned  shiftToByte, uint8_t  value) noexcept {
 	    const  uint32_t  preservedBits  =  word  &  ~(kDataBits  <<  shiftToByte);
 	    const  uint32_t  newBits  =  encodeDataToByte(value) <<  shiftToByte;
 	    return  preservedBits  |  newBits;
     }
-- 
+---
+Now that we have all the infrastructure to access and test the lock bits, we can start doing the fun stuff
 
 > Written with [StackEdit](https://stackedit.io/).
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjI3NzIyNTQzLC0zMDQxMDU1NjYsNTk2Mz
-g5NDMwLDExNzI2OTU3NDYsLTY5MzcxMjgwMl19
+eyJoaXN0b3J5IjpbLTIxMzIyMTYxMTUsLTMwNDEwNTU2Niw1OT
+YzODk0MzAsMTE3MjY5NTc0NiwtNjkzNzEyODAyXX0=
 -->
