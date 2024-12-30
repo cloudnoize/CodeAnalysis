@@ -104,8 +104,11 @@ The slow path implementation has some very interesting details.
 > - **Bit Interpretation is Endian-Dependent**: Endianness affects how bytes are arranged in memory. The byte at `0x6` corresponds to **bits 16–23** in little-endian and **bits 8–15** in big-endian.  
 > Thus, the shift calculation accounts for the **bit position within the word**, which changes with the memory layout.
 
+---
+now we have the basic infrastructure we need to access the address that represents the lock
 
 > Written with [StackEdit](https://stackedit.io/).
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTE3MjY5NTc0NiwtNjkzNzEyODAyXX0=
+eyJoaXN0b3J5IjpbLTE0NDMwNTI3MzMsMTE3MjY5NTc0NiwtNj
+kzNzEyODAyXX0=
 -->
