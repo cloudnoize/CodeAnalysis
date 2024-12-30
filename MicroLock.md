@@ -119,11 +119,13 @@ The slow path implementation has some very interesting details.
     inline  unsigned  MicroLockCore::waitBit() const  noexcept {
         return  1U  << (baseShift() +  1);
     }
+    
+---
 
 > Written with [StackEdit](https://stackedit.io/).
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTk1MzE4OTQ0MSwxMTcyNjk1NzQ2LC02OT
-M3MTI4MDJdfQ==
+eyJoaXN0b3J5IjpbNTk2Mzg5NDMwLDExNzI2OTU3NDYsLTY5Mz
+cxMjgwMl19
 -->
