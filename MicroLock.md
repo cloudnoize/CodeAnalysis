@@ -122,10 +122,17 @@ The slow path implementation has some very interesting details.
     
 ---
 
+    static  constexpr  uint32_t  encodeDataToWord(uint32_t  word, unsigned  shiftToByte, uint8_t  value) noexcept {
+	    const  uint32_t  preservedBits  =  word  &  ~(kDataBits  <<  shiftToByte);
+	    const  uint32_t  newBits  =  encodeDataToByte(value) <<  shiftToByte;
+	    return  preservedBits  |  newBits;
+    }
+
+
 > Written with [StackEdit](https://stackedit.io/).
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNTk2Mzg5NDMwLDExNzI2OTU3NDYsLTY5Mz
-cxMjgwMl19
+eyJoaXN0b3J5IjpbLTMwNDEwNTU2Niw1OTYzODk0MzAsMTE3Mj
+Y5NTc0NiwtNjkzNzEyODAyXX0=
 -->
