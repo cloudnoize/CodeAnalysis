@@ -114,7 +114,7 @@ The slow path implementation has some very interesting details.
 ---
 
     
-**waitBit()** - returns a mask 
+**waitBit()** - Returns a mask to the bit past the lock bit, which represents whether another thread is waiting for the lock.
 
     inline  unsigned  MicroLockCore::waitBit() const  noexcept {
         return  1U  << (baseShift() +  1);
@@ -124,6 +124,6 @@ The slow path implementation has some very interesting details.
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1NDIyMTM2ODEsMTE3MjY5NTc0NiwtNj
-kzNzEyODAyXX0=
+eyJoaXN0b3J5IjpbMTk1MzE4OTQ0MSwxMTcyNjk1NzQ2LC02OT
+M3MTI4MDJdfQ==
 -->
