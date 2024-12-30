@@ -128,6 +128,7 @@ The slow path implementation has some very interesting details.
 	    const  uint32_t  newBits  =  encodeDataToByte(value) <<  shiftToByte;
 	    return  preservedBits  |  newBits;
     }
+    
 ---
 Now that we have all the infrastructure to access and test the lock bits, we can start doing the fun stuff
 
@@ -135,7 +136,7 @@ Now that we have all the infrastructure to access and test the lock bits, we can
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjA1MzQ5NzM1MiwtMTI5Nzc1OTA0NCwtMz
-A0MTA1NTY2LDU5NjM4OTQzMCwxMTcyNjk1NzQ2LC02OTM3MTI4
-MDJdfQ==
+eyJoaXN0b3J5IjpbNzY5NTcxNzM4LDIwNTM0OTczNTIsLTEyOT
+c3NTkwNDQsLTMwNDEwNTU2Niw1OTYzODk0MzAsMTE3MjY5NTc0
+NiwtNjkzNzEyODAyXX0=
 -->
