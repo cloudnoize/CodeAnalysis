@@ -127,12 +127,12 @@ The slow path implementation has some very interesting details.
 	    const  uint32_t  newBits  =  encodeDataToByte(value) <<  shiftToByte;
 	    return  preservedBits  |  newBits;
     }
-
+- 
 
 > Written with [StackEdit](https://stackedit.io/).
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTMwNDEwNTU2Niw1OTYzODk0MzAsMTE3Mj
-Y5NTc0NiwtNjkzNzEyODAyXX0=
+eyJoaXN0b3J5IjpbMjI3NzIyNTQzLC0zMDQxMDU1NjYsNTk2Mz
+g5NDMwLDExNzI2OTU3NDYsLTY5MzcxMjgwMl19
 -->
