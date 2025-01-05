@@ -146,11 +146,11 @@ Shift the byte of the lock to the right until it's  the most right bit, then shi
 
 ---
 ## Class MicroLockBase
-All the functions till now defines the infrastructure to manipulate that lock, now let's see how it's used.
+All the functions till now defines the infrastructure to manipulate the lock, now let's see how it's implemented.
 
     template <unsigned  MaxSpins  =  1000, unsigned  MaxYields  =  0>
     class  MicroLockBase : public  MicroLockCore
-  The following class defines the lock interface, it inherits from the  
+  The following class defines the lock interface, it inherits from the class we partiallycovered above )
 
 
 > Written with [StackEdit](https://stackedit.io/).
@@ -159,6 +159,6 @@ All the functions till now defines the infrastructure to manipulate that lock, n
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDE0NDY2NzE5LDE5NjA5MTM4NzUsMTM3ND
+eyJoaXN0b3J5IjpbMzQzNzQ5ODcwLDE5NjA5MTM4NzUsMTM3ND
 U1NDM2MF19
 -->
