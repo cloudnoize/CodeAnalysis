@@ -150,7 +150,9 @@ All the functions till now defines the infrastructure to manipulate the lock, no
 
     template <unsigned  MaxSpins  =  1000, unsigned  MaxYields  =  0>
     class  MicroLockBase : public  MicroLockCore
-  The following class defines the lock interface, it inherits from the class we covered above, and accepts two template unsigned integers which determines the behavior of the slow path lock acquisition that
+  The following class defines the lock interface, it inherits from the class we covered above.
+  It accepts two template unsigned integers which determines the behavior of the slow path lock acquisition (we'll see the usage soon)
+ 
 
 
 > Written with [StackEdit](https://stackedit.io/).
@@ -159,6 +161,6 @@ All the functions till now defines the infrastructure to manipulate the lock, no
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIzMDc0MDAxNCwxOTYwOTEzODc1LDEzNz
+eyJoaXN0b3J5IjpbLTI5Njk1MTgxNSwxOTYwOTEzODc1LDEzNz
 Q1NTQzNjBdfQ==
 -->
