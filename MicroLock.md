@@ -145,12 +145,13 @@ Shift the byte of the lock to the right until it's  the most right bit, then shi
  
 
 ---
-Now that we have all the infrastructure to access and test the lock bits, we can start doing the fun stuff
+All the functions till now defines the infrastructure to manipulate that 
+
 
 > Written with [StackEdit](https://stackedit.io/).
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTg2MzE5NjEzMSwxMzc0NTU0MzYwXX0=
+eyJoaXN0b3J5IjpbLTM4Mjg2NDUzMiwxMzc0NTU0MzYwXX0=
 -->
