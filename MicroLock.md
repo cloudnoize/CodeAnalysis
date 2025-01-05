@@ -145,6 +145,7 @@ Shift the byte of the lock to the right until it's  the most right bit, then shi
  
 
 ---
+## Class MicroLockBase
 All the functions till now defines the infrastructure to manipulate that lock, now let's see how it's used.
 
     template <unsigned  MaxSpins  =  1000, unsigned  MaxYields  =  0>
@@ -158,6 +159,6 @@ All the functions till now defines the infrastructure to manipulate that lock, n
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1NjI5MDI4MzksMTk2MDkxMzg3NSwxMz
-c0NTU0MzYwXX0=
+eyJoaXN0b3J5IjpbNDE0NDY2NzE5LDE5NjA5MTM4NzUsMTM3ND
+U1NDM2MF19
 -->
