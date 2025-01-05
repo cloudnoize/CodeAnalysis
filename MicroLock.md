@@ -181,12 +181,13 @@ All the functions till now defines the infrastructure to manipulate the lock, no
 
 Finally, sone action, let's see 
 
+
 > Written with [StackEdit](https://stackedit.io/).
 
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTk4MjcyNTMyMywtMTgwODYyMjE1MiwtMj
-k2OTUxODE1LDE5NjA5MTM4NzUsMTM3NDU1NDM2MF19
+eyJoaXN0b3J5IjpbLTE5NTYyMTExNjUsLTE4MDg2MjIxNTIsLT
+I5Njk1MTgxNSwxOTYwOTEzODc1LDEzNzQ1NTQzNjBdfQ==
 -->
