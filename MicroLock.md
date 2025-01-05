@@ -135,6 +135,12 @@ The slow path implementation has some very interesting details.
 
  
 
+    static  constexpr  uint8_t  decodeDataFromWord(
+    uint32_t  word, unsigned  baseShift) noexcept {
+    return  static_cast<uint8_t>(
+    static_cast<uint8_t>(word  >>  baseShift) >>  kNumLockBits);
+    }
+
  
 
 ---
@@ -143,6 +149,7 @@ Now that we have all the infrastructure to access and test the lock bits, we can
 > Written with [StackEdit](https://stackedit.io/).
 
 
+
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNzE3OTcwMTgzLDEzNzQ1NTQzNjBdfQ==
+eyJoaXN0b3J5IjpbLTEzNTQzMzkyMDUsMTM3NDU1NDM2MF19
 -->
