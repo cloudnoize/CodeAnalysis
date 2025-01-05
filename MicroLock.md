@@ -152,6 +152,7 @@ All the functions till now defines the infrastructure to manipulate the lock, no
     class  MicroLockBase : public  MicroLockCore
   The following class defines the lock interface, it inherits from the class we covered above.
   It accepts two template unsigned integers which determines the behavior of the slow path lock acquisition (we'll see the usage soon)
+
  
     template <unsigned  MaxSpins, unsigned  MaxYields>
     uint8_t  MicroLockBase<MaxSpins, MaxYields>::lockAndLoad() noexcept {
@@ -184,6 +185,6 @@ All the functions till now defines the infrastructure to manipulate the lock, no
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEwODQ2NTA4MDYsLTI5Njk1MTgxNSwxOT
+eyJoaXN0b3J5IjpbLTE4MDg2MjIxNTIsLTI5Njk1MTgxNSwxOT
 YwOTEzODc1LDEzNzQ1NTQzNjBdfQ==
 -->
