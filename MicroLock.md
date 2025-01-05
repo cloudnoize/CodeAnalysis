@@ -154,6 +154,7 @@ All the functions till now defines the infrastructure to manipulate the lock, no
   It accepts two template unsigned integers which determines the behavior of the slow path lock acquisition (we'll see the usage soon)
 
  ---
+ **lockAndLoad()** - Try to acquire the lock in fast path, if fails degrades to slow path. 
  
     template <unsigned  MaxSpins, unsigned  MaxYields>
     uint8_t  MicroLockBase<MaxSpins, MaxYields>::lockAndLoad() noexcept {
@@ -186,6 +187,6 @@ Finally, sone action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE4MDE5MzU5ODEsLTE4MDg2MjIxNTIsLT
-I5Njk1MTgxNSwxOTYwOTEzODc1LDEzNzQ1NTQzNjBdfQ==
+eyJoaXN0b3J5IjpbLTM4NTE4NTQ3NSwtMTgwODYyMjE1MiwtMj
+k2OTUxODE1LDE5NjA5MTM4NzUsMTM3NDU1NDM2MF19
 -->
