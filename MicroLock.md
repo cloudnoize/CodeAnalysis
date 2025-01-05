@@ -184,7 +184,7 @@ All the functions till now defines the infrastructure to manipulate the lock, no
 
 Finally, sone action, let's see 
 
- - `static_assert(MaxSpins + MaxYields < (unsigned)-1, "overflow")` if the result of MaxSpins + MaxYields  is bigger than unsigned can hold, it will be promoted, comparing it to the biggest value an unsigned can hold
+ - `static_assert(MaxSpins + MaxYields < (unsigned)-1, "overflow")` if the result of MaxSpins + MaxYields  is bigger than unsigned can hold, it will be promoted, comparing it to the biggest value an unsigned can hold 
 
 > Written with [StackEdit](https://stackedit.io/).
 
@@ -192,7 +192,7 @@ Finally, sone action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTM1NzA5Mzg2MiwtMTk1NjIxMTE2NSwtMT
+eyJoaXN0b3J5IjpbLTgyNzk5MDEyNiwtMTk1NjIxMTE2NSwtMT
 gwODYyMjE1MiwtMjk2OTUxODE1LDE5NjA5MTM4NzUsMTM3NDU1
 NDM2MF19
 -->
