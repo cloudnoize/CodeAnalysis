@@ -153,33 +153,18 @@ All the functions till now defines the infrastructure to manipulate the lock, no
   The following class defines the lock interface, it inherits from the class we covered above.
   It accepts two template unsigned integers which determines the behavior of the slow path lock acquisition (we'll see the usage soon)
  
- 
-
     template <unsigned  MaxSpins, unsigned  MaxYields>
-    
     uint8_t  MicroLockBase<MaxSpins, MaxYields>::lockAndLoad() noexcept {
-    
-    static_assert(MaxSpins + MaxYields < (unsigned)-1, "overflow");
-    
-      
-    
-    detail::Futex<>* wordPtr =  word();
-    
-    uint32_t oldWord;
-    
-    oldWord =  wordPtr->load(std::memory_order_relaxed);
-    
-    if ((oldWord &  heldBit()) ==  0  &&
-    
-    wordPtr->compare_exchange_weak(
-    
-    oldWord,
-    
-    oldWord |  heldBit(),
-    
-    std::memory_order_acquire,
-    
-    std::memory_order_relaxed)) {
+		    static_assert(MaxSpins + MaxYields < (unsigned)-1, "overflow")
+		    detail::Futex<>* wordPtr =  word();
+		    uint32_t oldWord;
+		    oldWord =  wordPtr->load(std::memory_order_relaxed);
+		    if ((oldWord &  heldBit()) ==  0  &&
+			    wordPtr->compare_exchange_weak(
+			    oldWord,
+			    oldWord |  heldBit(),
+			    std::memory_order_acquire,
+			    std::memory_order_relaxed)) {
 		    // Fast uncontended case: memory_order_acquire above is our barrier
 			    return  decodeDataFromWord(oldWord |  heldBit());
 		    } else {
@@ -192,12 +177,13 @@ All the functions till now defines the infrastructure to manipulate the lock, no
     }
 
 
+
 > Written with [StackEdit](https://stackedit.io/).
 
 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTgwNjMxMzMzNSwtMjk2OTUxODE1LDE5Nj
-A5MTM4NzUsMTM3NDU1NDM2MF19
+eyJoaXN0b3J5IjpbLTEwODQ2NTA4MDYsLTI5Njk1MTgxNSwxOT
+YwOTEzODc1LDEzNzQ1NTQzNjBdfQ==
 -->
