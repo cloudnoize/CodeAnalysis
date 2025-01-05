@@ -153,6 +153,51 @@ All the functions till now defines the infrastructure to manipulate the lock, no
   The following class defines the lock interface, it inherits from the class we covered above.
   It accepts two template unsigned integers which determines the behavior of the slow path lock acquisition (we'll see the usage soon)
  
+ template <unsigned  MaxSpins, unsigned  MaxYields>
+
+uint8_t  MicroLockBase<MaxSpins, MaxYields>::lockAndLoad() noexcept {
+
+static_assert(MaxSpins + MaxYields < (unsigned)-1, "overflow");
+
+  
+
+detail::Futex<>* wordPtr =  word();
+
+uint32_t oldWord;
+
+oldWord =  wordPtr->load(std::memory_order_relaxed);
+
+if ((oldWord &  heldBit()) ==  0  &&
+
+wordPtr->compare_exchange_weak(
+
+oldWord,
+
+oldWord |  heldBit(),
+
+std::memory_order_acquire,
+
+std::memory_order_relaxed)) {
+
+// Fast uncontended case: memory_order_acquire above is our barrier
+
+return  decodeDataFromWord(oldWord |  heldBit());
+
+} else {
+
+// lockSlowPath doesn't call waitBit(); it just shifts the input bit. Make
+
+// sure its shifting produces the same result a call to waitBit would.
+
+assert(heldBit() <<  1  ==  waitBit());
+
+// lockSlowPath emits its own memory barrier
+
+return  lockSlowPath(oldWord, wordPtr, baseShift(), MaxSpins, MaxYields);
+
+}
+
+}
 
 
 > Written with [StackEdit](https://stackedit.io/).
@@ -161,6 +206,6 @@ All the functions till now defines the infrastructure to manipulate the lock, no
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTI5Njk1MTgxNSwxOTYwOTEzODc1LDEzNz
-Q1NTQzNjBdfQ==
+eyJoaXN0b3J5IjpbNjk1MDcxOTU1LC0yOTY5NTE4MTUsMTk2MD
+kxMzg3NSwxMzc0NTU0MzYwXX0=
 -->
