@@ -140,7 +140,7 @@ The slow path implementation has some very interesting details.
 	    return  static_cast<uint8_t>(
 	    static_cast<uint8_t>(word  >>  baseShift) >>  kNumLockBits);
     }
-Sift the byte of the lock to the right until it's  the 
+Shift the byte of the lock to the right until it's  the most right bit, then shift the bits of the user data until they are the most right bits, and return the byte. 
  
 
 ---
@@ -151,5 +151,5 @@ Now that we have all the infrastructure to access and test the lock bits, we can
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTgwOTMwNTIxNywxMzc0NTU0MzYwXX0=
+eyJoaXN0b3J5IjpbLTEwMDU1NDU1NTQsMTM3NDU1NDM2MF19
 -->
