@@ -145,7 +145,8 @@ Shift the byte of the lock to the right until it's  the most right bit, then shi
  
 
 ---
-All the functions till now defines the infrastructure to manipulate that 
+All the functions till now defines the infrastructure to manipulate that lock, now let's see how it's used.
+
 
 
 > Written with [StackEdit](https://stackedit.io/).
@@ -153,5 +154,5 @@ All the functions till now defines the infrastructure to manipulate that
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTM4Mjg2NDUzMiwxMzc0NTU0MzYwXX0=
+eyJoaXN0b3J5IjpbMTk2MDkxMzg3NSwxMzc0NTU0MzYwXX0=
 -->
