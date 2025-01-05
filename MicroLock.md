@@ -133,14 +133,14 @@ The slow path implementation has some very interesting details.
  - `const  uint32_t  newBits  =  encodeDataToByte(value) <<  shiftToByte` encodeDataToByte simply shifts the value, `kNumLockBits` (2) to the left and returns a byte with the value encoded in the correct position, then we shift that byte to the lock address within the word, the final result `newBits` encodes just the value bits within a 32 bit unsigned. the return preserves all the bits of the word beside the data bits which now contains the input value.
 - - -
 
- 
+ **decodeDataFromWord()** - returns the data that is stored in the user bits of the lock.
 
     static  constexpr  uint8_t  decodeDataFromWord(
     uint32_t  word, unsigned  baseShift) noexcept {
-    return  static_cast<uint8_t>(
-    static_cast<uint8_t>(word  >>  baseShift) >>  kNumLockBits);
+	    return  static_cast<uint8_t>(
+	    static_cast<uint8_t>(word  >>  baseShift) >>  kNumLockBits);
     }
-
+Sift the byte of the lock to the right until it's  the 
  
 
 ---
@@ -151,5 +151,5 @@ Now that we have all the infrastructure to access and test the lock bits, we can
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzNTQzMzkyMDUsMTM3NDU1NDM2MF19
+eyJoaXN0b3J5IjpbMTgwOTMwNTIxNywxMzc0NTU0MzYwXX0=
 -->
