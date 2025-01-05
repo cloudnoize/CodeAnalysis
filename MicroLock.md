@@ -29,7 +29,7 @@ I will explain some of the less intuitive and tricky parts of the code in detail
 ### Methods
 In very high level, the logic is divided to a fast path of try acquiring the lock bit with a compare exchange operation, and a slow path where the compare exchange fails and some other strategies are tried, where the least option is to use `futex` to put the thread to sleep until its woken up.
 The slow path implementation has some very interesting details. 
-I'll go over the method 
+I'll go over the method in incremental order i.e. from low level functionality to more complex logic which uses that functionality. 
 
 ---
 
@@ -152,5 +152,5 @@ Now that we have all the infrastructure to access and test the lock bits, we can
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTUwMDIxMTE5NCwxMzc0NTU0MzYwXX0=
+eyJoaXN0b3J5IjpbMTg2MzE5NjEzMSwxMzc0NTU0MzYwXX0=
 -->
