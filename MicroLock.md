@@ -179,9 +179,10 @@ All the functions till now defines the infrastructure to manipulate the lock, no
 	    }
     }
 
-Finally, sone action, let's see 
+Finally, some action, let's see 
 
  - `static_assert(MaxSpins + MaxYields < (unsigned)-1, "overflow")` assert if the result of MaxSpins + MaxYields  is bigger than unsigned can hold, in case it is `MaxSpins + MaxYields` will be promoted to a bigger type than 32bits unsigned, the cast to `(unsigned)-1` results in a all 1 bit pattern i.e. the max unsigned value.
+ - Atomic load the 
  - 
 
 > Written with [StackEdit](https://stackedit.io/).
@@ -190,7 +191,7 @@ Finally, sone action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEyOTk2MTI4ODcsMjA0NjUwODIyNiwtOD
+eyJoaXN0b3J5IjpbLTE1NDkxMzIzNTEsMjA0NjUwODIyNiwtOD
 I3OTkwMTI2LC0xOTU2MjExMTY1LC0xODA4NjIyMTUyLC0yOTY5
 NTE4MTUsMTk2MDkxMzg3NSwxMzc0NTU0MzYwXX0=
 -->
