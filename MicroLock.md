@@ -158,10 +158,7 @@ All the functions till now defines the infrastructure to manipulate the lock, no
  
     template <unsigned  MaxSpins, unsigned  MaxYields>
     uint8_t  MicroLockBase<MaxSpins, MaxYields>::lockAndLoad() noexcept {
-		    
-
- - static_assert(MaxSpins + MaxYields < (unsigned)-1, "overflow")
-
+		    static_assert(MaxSpins + MaxYields < (unsigned)-1, "overflow")
 		    detail::Futex<>* wordPtr =  word();
 		    uint32_t oldWord;
 		    oldWord =  wordPtr->load(std::memory_order_relaxed);
@@ -193,7 +190,7 @@ Finally, sone action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjA0NjUwODIyNiwtODI3OTkwMTI2LC0xOT
-U2MjExMTY1LC0xODA4NjIyMTUyLC0yOTY5NTE4MTUsMTk2MDkx
-Mzg3NSwxMzc0NTU0MzYwXX0=
+eyJoaXN0b3J5IjpbLTEyOTk2MTI4ODcsMjA0NjUwODIyNiwtOD
+I3OTkwMTI2LC0xOTU2MjExMTY1LC0xODA4NjIyMTUyLC0yOTY5
+NTE4MTUsMTk2MDkxMzg3NSwxMzc0NTU0MzYwXX0=
 -->
