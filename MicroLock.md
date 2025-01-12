@@ -183,7 +183,8 @@ Finally, some action, let's see
 
  - `static_assert(MaxSpins + MaxYields < (unsigned)-1, "overflow")` assert if the result of MaxSpins + MaxYields  is bigger than unsigned can hold, in case it is `MaxSpins + MaxYields` will be promoted to a bigger type than 32bits unsigned, the cast to `(unsigned)-1` results in a all 1 bit pattern i.e. the max unsigned value.
  - Atomic load the word that contains the lock, the load uses [memory_order_relaxed](https://en.cppreference.com/w/cpp/atomic/memory_order) not impose any synchronization across threads, it won't be a problem as it's being used in conjunction to  a compare exchange operation.
- - try to lock the lock in fast path, if the 
+ - try to lock the lock in fast path:
+ --check if the lock is free try to perform compare exchange
  
  - List item
 
@@ -193,7 +194,7 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTMyODA0MzcyOCwtMTMyODkyNjIxNywtMT
+eyJoaXN0b3J5IjpbMTg1OTE3NDQzNCwtMTMyODkyNjIxNywtMT
 U0OTEzMjM1MSwyMDQ2NTA4MjI2LC04Mjc5OTAxMjYsLTE5NTYy
 MTExNjUsLTE4MDg2MjIxNTIsLTI5Njk1MTgxNSwxOTYwOTEzOD
 c1LDEzNzQ1NTQzNjBdfQ==
