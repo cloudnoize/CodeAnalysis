@@ -182,7 +182,7 @@ All the functions till now defines the infrastructure to manipulate the lock, no
 Finally, some action, let's see 
 
  - `static_assert(MaxSpins + MaxYields < (unsigned)-1, "overflow")` assert if the result of MaxSpins + MaxYields  is bigger than unsigned can hold, in case it is `MaxSpins + MaxYields` will be promoted to a bigger type than 32bits unsigned, the cast to `(unsigned)-1` results in a all 1 bit pattern i.e. the max unsigned value.
- - Atomic load the word that contains the lock.
+ - Atomic load the word that contains the lock, the load uses memory_order_relaxed not impose any synchronization across threads 
  - 
 
 > Written with [StackEdit](https://stackedit.io/).
@@ -191,8 +191,8 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzMjg5MjYyMTcsLTE1NDkxMzIzNTEsMj
-A0NjUwODIyNiwtODI3OTkwMTI2LC0xOTU2MjExMTY1LC0xODA4
-NjIyMTUyLC0yOTY5NTE4MTUsMTk2MDkxMzg3NSwxMzc0NTU0Mz
-YwXX0=
+eyJoaXN0b3J5IjpbOTM1NzUwODY2LC0xMzI4OTI2MjE3LC0xNT
+Q5MTMyMzUxLDIwNDY1MDgyMjYsLTgyNzk5MDEyNiwtMTk1NjIx
+MTE2NSwtMTgwODYyMjE1MiwtMjk2OTUxODE1LDE5NjA5MTM4Nz
+UsMTM3NDU1NDM2MF19
 -->
