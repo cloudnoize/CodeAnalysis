@@ -185,6 +185,7 @@ Finally, some action, let's see
  - Atomic load the word that contains the lock, the load uses [memory_order_relaxed](https://en.cppreference.com/w/cpp/atomic/memory_order) not impose any synchronization across threads, it won't be a problem as it's being used in conjunction to  a compare exchange operation.
  - try to lock the lock in fast path:
  --if the lock is free try to perform compare exchange i.e. if the **current** value of the word equals the read value of oldWord, replace it with a locked version of the word. the success case will use memory_order_acquire acting as a **barrier** that prevents reordering of memory operations and ensures that the thread acquiring the lock sees all memory updates made by other threads before they released the lock.
+ --if the thread succeeded to lock the lock ,return the user value stored in the lock.
  
  - List item
 
@@ -194,8 +195,8 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTI5NzU5MzA2Miw4ODI0NTg4MjQsLTEzMj
-g5MjYyMTcsLTE1NDkxMzIzNTEsMjA0NjUwODIyNiwtODI3OTkw
-MTI2LC0xOTU2MjExMTY1LC0xODA4NjIyMTUyLC0yOTY5NTE4MT
-UsMTk2MDkxMzg3NSwxMzc0NTU0MzYwXX0=
+eyJoaXN0b3J5IjpbLTE3NTU4NzE3NjAsODgyNDU4ODI0LC0xMz
+I4OTI2MjE3LC0xNTQ5MTMyMzUxLDIwNDY1MDgyMjYsLTgyNzk5
+MDEyNiwtMTk1NjIxMTE2NSwtMTgwODYyMjE1MiwtMjk2OTUxOD
+E1LDE5NjA5MTM4NzUsMTM3NDU1NDM2MF19
 -->
