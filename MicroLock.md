@@ -186,6 +186,7 @@ Finally, some action, let's see
  - try to lock the lock in fast path:
  - if the lock is free try to perform compare exchange i.e. if the **current** value of the word equals the read value of oldWord, replace it with a locked version of the word. the success case will use memory_order_acquire acting as a **barrier** that prevents reordering of memory operations and ensures that the thread acquiring the lock sees all memory updates made by other threads before they released the lock.
  - if the thread succeeded to lock the lock ,return the user value stored in the lock.
+ - 
  
  - List item
 
@@ -195,9 +196,9 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNzI5NTM0MTYwLC0xNzU1ODcxNzYwLDg4Mj
-Q1ODgyNCwtMTMyODkyNjIxNywtMTU0OTEzMjM1MSwyMDQ2NTA4
-MjI2LC04Mjc5OTAxMjYsLTE5NTYyMTExNjUsLTE4MDg2MjIxNT
-IsLTI5Njk1MTgxNSwxOTYwOTEzODc1LDEzNzQ1NTQzNjBdfQ==
-
+eyJoaXN0b3J5IjpbLTEzODk2MTEwOTksNzI5NTM0MTYwLC0xNz
+U1ODcxNzYwLDg4MjQ1ODgyNCwtMTMyODkyNjIxNywtMTU0OTEz
+MjM1MSwyMDQ2NTA4MjI2LC04Mjc5OTAxMjYsLTE5NTYyMTExNj
+UsLTE4MDg2MjIxNTIsLTI5Njk1MTgxNSwxOTYwOTEzODc1LDEz
+NzQ1NTQzNjBdfQ==
 -->
