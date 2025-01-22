@@ -187,7 +187,7 @@ Finally, some action, let's see
  - if the lock is free try to perform compare exchange i.e. if the **current** value of the word equals the read value of oldWord, replace it with a locked version of the word. the success case will use memory_order_acquire acting as a **barrier** that prevents reordering of memory operations and ensures that the thread acquiring the lock sees all memory updates made by other threads before they released the lock.
  - if the thread succeeded to lock the lock ,return the user value stored in the lock.
  - if locking fails, we degrade to the **slowpath** locking, passing it the  `MaxSpins, MaxYields` template parameters which defies the behaviour of the slow path 
- - I don't understand the assertion and comment above the call  `lockSlowPath doesn't call waitBit(); it just shifts...` , I 
+ - I don't understand the assertion and comment above the call  `lockSlowPath doesn't call waitBit(); it just shifts...`  i..e. why not use waitBit() . 
  
  - List item
 
@@ -197,7 +197,7 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbODQzMjE4Nzk3LC0xMzg5NjExMDk5LDcyOT
+eyJoaXN0b3J5IjpbNjM5MTg2MzI3LC0xMzg5NjExMDk5LDcyOT
 UzNDE2MCwtMTc1NTg3MTc2MCw4ODI0NTg4MjQsLTEzMjg5MjYy
 MTcsLTE1NDkxMzIzNTEsMjA0NjUwODIyNiwtODI3OTkwMTI2LC
 0xOTU2MjExMTY1LC0xODA4NjIyMTUyLC0yOTY5NTE4MTUsMTk2
