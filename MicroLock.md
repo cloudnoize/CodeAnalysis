@@ -189,7 +189,9 @@ Finally, some action, let's see
  - if locking fails, we degrade to the **slowpath** locking, passing it the  `MaxSpins, MaxYields` template parameters which defies the behaviour of the slow path 
  - I don't understand the assertion and comment above the call  `lockSlowPath doesn't call waitBit(); it just shifts...`  i..e. why not use waitBit() . 
  - --
-- **lockSlowPath**() - Perform   
+- lockSlowPath() 
+-   
+
 
     uint8_t MicroLockCore::lockSlowPath(
         uint32_t oldWord,
@@ -249,9 +251,10 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNTA2NDY1NzAzLDYzOTE4NjMyNywtMTM4OT
-YxMTA5OSw3Mjk1MzQxNjAsLTE3NTU4NzE3NjAsODgyNDU4ODI0
-LC0xMzI4OTI2MjE3LC0xNTQ5MTMyMzUxLDIwNDY1MDgyMjYsLT
-gyNzk5MDEyNiwtMTk1NjIxMTE2NSwtMTgwODYyMjE1MiwtMjk2
-OTUxODE1LDE5NjA5MTM4NzUsMTM3NDU1NDM2MF19
+eyJoaXN0b3J5IjpbLTQxOTE3MDYxMiw1MDY0NjU3MDMsNjM5MT
+g2MzI3LC0xMzg5NjExMDk5LDcyOTUzNDE2MCwtMTc1NTg3MTc2
+MCw4ODI0NTg4MjQsLTEzMjg5MjYyMTcsLTE1NDkxMzIzNTEsMj
+A0NjUwODIyNiwtODI3OTkwMTI2LC0xOTU2MjExMTY1LC0xODA4
+NjIyMTUyLC0yOTY5NTE4MTUsMTk2MDkxMzg3NSwxMzc0NTU0Mz
+YwXX0=
 -->
