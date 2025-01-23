@@ -248,7 +248,7 @@ Finally, some action, let's see
 - node - it's not clear to me why memory_order_relaxed is used to store the waitBit as it doesn't guarantee any synchronization, resulting in an opportunity for the releasing thread to miss the update to my understanding.
 - When eventually the lock is not held, the thread moves to try locking the lock, it "remembers" if it was asleep with futex, and sets the waitbit to true if so, by including `needWaitBit` in the final state of the lock (`newWord`), it ensures that the thread transitioning out of the waiting state doesn't inadvertently clear the bit, preserving the state for consistency.
 - if the thread succeeded to perform the compare exchange, it finally has the lock! 
-- return 
+- return the user decoded value. 
  
  - List item
 
@@ -259,7 +259,7 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTkyMjYzODExMyw3MzU4MzM0OTQsMTAyNT
+eyJoaXN0b3J5IjpbLTIyMjc4NTM5MCw3MzU4MzM0OTQsMTAyNT
 Y0Njc5NSwyMzI1OTU1MDQsLTgwOTk0NDU4NywtNTY5OTMzNzgs
 NTA2NDY1NzAzLDYzOTE4NjMyNywtMTM4OTYxMTA5OSw3Mjk1Mz
 QxNjAsLTE3NTU4NzE3NjAsODgyNDU4ODI0LC0xMzI4OTI2MjE3
