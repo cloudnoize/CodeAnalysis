@@ -243,7 +243,7 @@ Finally, some action, let's see
     
 - Performs a loop, for each time the lock is locked increment the spins counter and perform a wait based in the spins value:
 - `if spins is lower than masSpins perform folly::asm_volatile_pause()` we didn't execute many wait rounds, there is hope to get the lock with short wait, it instructs the cpu to execute some pause instruction without performing context switch.
-- if spins is larger than maxSpins 
+- `if spins is larger than maxSpins perform yield` results in an expensive system call 
  
  - List item
 
@@ -254,10 +254,10 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE5MzUyODY3NjAsLTgwOTk0NDU4NywtNT
-Y5OTMzNzgsNTA2NDY1NzAzLDYzOTE4NjMyNywtMTM4OTYxMTA5
-OSw3Mjk1MzQxNjAsLTE3NTU4NzE3NjAsODgyNDU4ODI0LC0xMz
-I4OTI2MjE3LC0xNTQ5MTMyMzUxLDIwNDY1MDgyMjYsLTgyNzk5
-MDEyNiwtMTk1NjIxMTE2NSwtMTgwODYyMjE1MiwtMjk2OTUxOD
-E1LDE5NjA5MTM4NzUsMTM3NDU1NDM2MF19
+eyJoaXN0b3J5IjpbMzA2OTA3OTAwLC04MDk5NDQ1ODcsLTU2OT
+kzMzc4LDUwNjQ2NTcwMyw2MzkxODYzMjcsLTEzODk2MTEwOTks
+NzI5NTM0MTYwLC0xNzU1ODcxNzYwLDg4MjQ1ODgyNCwtMTMyOD
+kyNjIxNywtMTU0OTEzMjM1MSwyMDQ2NTA4MjI2LC04Mjc5OTAx
+MjYsLTE5NTYyMTExNjUsLTE4MDg2MjIxNTIsLTI5Njk1MTgxNS
+wxOTYwOTEzODc1LDEzNzQ1NTQzNjBdfQ==
 -->
