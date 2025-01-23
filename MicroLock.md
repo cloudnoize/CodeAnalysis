@@ -246,7 +246,7 @@ Finally, some action, let's see
 - `if spins is larger than maxSpins perform yield` might result in an expensive system call `sched_yield` which relinquishes the CPU entirely, allowing the scheduler to run other threads.
 - if we kept spinning until spins is bigger than both maxSpins and maxYield we'll stop busy waiting and put the thread to sleep using the futex implementation which associates the address of the lock with a list of threads that waits for that lock and wakes a sleeping thread on a lock release event. to enable futex wait, the thread sets the wait bit on the lock, to signal the threads that holds the lock that some threads are asleep waiting for the lock. 
 - node - it's not clear to me why memory_order_relaxed is used to store the waitBit as it doesn't guarantee any synchronization, resulting in an opportunity for the releasing thread to miss the update to my understanding.
-- When eventually the lock is not held, the thread moves to try locking the lock, it "remembers" if it was asleep with futex, and sets the waitbit to true if so since 
+- When eventually the lock is not held, the thread moves to try locking the lock, it "remembers" if it was asleep with futex, and sets the waitbit to true if so, 
  
  - List item
 
@@ -257,7 +257,7 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQyMzI3NTk3MiwxMDI1NjQ2Nzk1LDIzMj
+eyJoaXN0b3J5IjpbLTQ4NDI3MjAyNiwxMDI1NjQ2Nzk1LDIzMj
 U5NTUwNCwtODA5OTQ0NTg3LC01Njk5MzM3OCw1MDY0NjU3MDMs
 NjM5MTg2MzI3LC0xMzg5NjExMDk5LDcyOTUzNDE2MCwtMTc1NT
 g3MTc2MCw4ODI0NTg4MjQsLTEzMjg5MjYyMTcsLTE1NDkxMzIz
