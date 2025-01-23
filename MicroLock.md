@@ -190,6 +190,56 @@ Finally, some action, let's see
  - I don't understand the assertion and comment above the call  `lockSlowPath doesn't call waitBit(); it just shifts...`  i..e. why not use waitBit() . 
  - --
  
+
+    uint8_t MicroLockCore::lockSlowPath(
+    uint32_t oldWord,
+    detail::Futex<>* wordPtr,
+    unsigned baseShift,
+    unsigned maxSpins,
+    unsigned maxYields) noexcept {
+  uint32_t newWord;
+  unsigned spins = 0;
+  uint32_t heldBit = 1 << baseShift;
+  uint32_t waitBit = heldBit << 1;
+  uint32_t needWaitBit = 0;
+
+retry:
+  if ((oldWord & heldBit) != 0) {
+    ++spins;
+    if (spins > maxSpins + maxYields) {
+      newWord = oldWord | waitBit;
+      if (newWord != oldWord) {
+        if (!wordPtr->compare_exchange_weak(
+                oldWord,
+                newWord,
+                std::memory_order_relaxed,
+                std::memory_order_relaxed)) {
+          goto retry;
+        }
+      }
+      detail::futexWait(wordPtr, newWord, heldBit);
+      needWaitBit = waitBit;
+    } else if (spins > maxSpins) {
+      std::this_thread::yield();
+    } else {
+      folly::asm_volatile_pause();
+    }
+    oldWord = wordPtr->load(std::memory_order_relaxed);
+    goto retry;
+  }
+
+  newWord = oldWord | heldBit | needWaitBit;
+  if (!wordPtr->compare_exchange_weak(
+          oldWord,
+          newWord,
+          std::memory_order_acquire,
+          std::memory_order_relaxed)) {
+    goto retry;
+  }
+  return decodeDataFromWord(newWord, baseShift);
+}
+
+
  
  - List item
 
@@ -199,9 +249,9 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMzg2ODM2NDIwLDYzOTE4NjMyNywtMTM4OT
-YxMTA5OSw3Mjk1MzQxNjAsLTE3NTU4NzE3NjAsODgyNDU4ODI0
-LC0xMzI4OTI2MjE3LC0xNTQ5MTMyMzUxLDIwNDY1MDgyMjYsLT
-gyNzk5MDEyNiwtMTk1NjIxMTE2NSwtMTgwODYyMjE1MiwtMjk2
-OTUxODE1LDE5NjA5MTM4NzUsMTM3NDU1NDM2MF19
+eyJoaXN0b3J5IjpbLTEwODU1NjUzMTQsNjM5MTg2MzI3LC0xMz
+g5NjExMDk5LDcyOTUzNDE2MCwtMTc1NTg3MTc2MCw4ODI0NTg4
+MjQsLTEzMjg5MjYyMTcsLTE1NDkxMzIzNTEsMjA0NjUwODIyNi
+wtODI3OTkwMTI2LC0xOTU2MjExMTY1LC0xODA4NjIyMTUyLC0y
+OTY5NTE4MTUsMTk2MDkxMzg3NSwxMzc0NTU0MzYwXX0=
 -->
