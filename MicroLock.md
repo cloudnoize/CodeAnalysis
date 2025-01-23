@@ -188,6 +188,105 @@ Finally, some action, let's see
  - if the thread succeeded to lock the lock ,return the user value stored in the lock.
  - if locking fails, we degrade to the **slowpath** locking, passing it the  `MaxSpins, MaxYields` template parameters which defies the behaviour of the slow path 
  - I don't understand the assertion and comment above the call  `lockSlowPath doesn't call waitBit(); it just shifts...`  i..e. why not use waitBit() . 
+ - --
+
+    uint8_t  MicroLockCore::lockSlowPath(
+	    uint32_t  oldWord,
+	    detail::Futex<>*  wordPtr,
+	    unsigned  baseShift,
+	    unsigned  maxSpins,
+	    unsigned  maxYields) noexcept {
+   
+    uint32_t newWord;
+    
+    unsigned spins =  0;
+    
+    uint32_t heldBit =  1  << baseShift;
+    
+    uint32_t waitBit = heldBit <<  1;
+    
+    uint32_t needWaitBit =  0;
+    
+      
+    
+    retry:
+    
+    if ((oldWord & heldBit) !=  0) {
+    
+    ++spins;
+    
+    if (spins > maxSpins + maxYields) {
+    
+    // Somebody appears to have the lock. Block waiting for the
+    
+    // holder to unlock the lock. We set heldbit(slot) so that the
+    
+    // lock holder knows to FUTEX_WAKE us.
+    
+    newWord = oldWord | waitBit;
+    
+    if (newWord != oldWord) {
+    
+    if (!wordPtr->compare_exchange_weak(
+    
+    oldWord,
+    
+    newWord,
+    
+    std::memory_order_relaxed,
+    
+    std::memory_order_relaxed)) {
+    
+    goto  retry;
+    
+    }
+    
+    }
+    
+    detail::futexWait(wordPtr, newWord, heldBit);
+    
+    needWaitBit  = waitBit;
+    
+    } else  if (spins > maxSpins) {
+    
+    // sched_yield(), but more portable
+    
+    std::this_thread::yield();
+    
+    } else {
+    
+    folly::asm_volatile_pause();
+    
+    }
+    
+    oldWord =  wordPtr->load(std::memory_order_relaxed);
+    
+    goto  retry;
+    
+    }
+    
+      
+    
+    newWord = oldWord | heldBit | needWaitBit;
+    
+    if (!wordPtr->compare_exchange_weak(
+    
+    oldWord,
+    
+    newWord,
+    
+    std::memory_order_acquire,
+    
+    std::memory_order_relaxed)) {
+    
+    goto  retry;
+    
+    }
+    
+    return  decodeDataFromWord(newWord, baseShift);
+    
+    }
+
  
  - List item
 
@@ -197,9 +296,9 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNjM5MTg2MzI3LC0xMzg5NjExMDk5LDcyOT
-UzNDE2MCwtMTc1NTg3MTc2MCw4ODI0NTg4MjQsLTEzMjg5MjYy
-MTcsLTE1NDkxMzIzNTEsMjA0NjUwODIyNiwtODI3OTkwMTI2LC
-0xOTU2MjExMTY1LC0xODA4NjIyMTUyLC0yOTY5NTE4MTUsMTk2
-MDkxMzg3NSwxMzc0NTU0MzYwXX0=
+eyJoaXN0b3J5IjpbLTEzMjk0OTYwMDUsNjM5MTg2MzI3LC0xMz
+g5NjExMDk5LDcyOTUzNDE2MCwtMTc1NTg3MTc2MCw4ODI0NTg4
+MjQsLTEzMjg5MjYyMTcsLTE1NDkxMzIzNTEsMjA0NjUwODIyNi
+wtODI3OTkwMTI2LC0xOTU2MjExMTY1LC0xODA4NjIyMTUyLC0y
+OTY5NTE4MTUsMTk2MDkxMzg3NSwxMzc0NTU0MzYwXX0=
 -->
