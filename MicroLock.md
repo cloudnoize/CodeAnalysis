@@ -245,7 +245,7 @@ Finally, some action, let's see
 - `if spins is lower than masSpins perform folly::asm_volatile_pause()` we didn't execute many wait rounds, there is hope to get the lock with short wait, it instructs the cpu to execute some pause instruction without performing context switch.
 - `if spins is larger than maxSpins perform yield` might result in an expensive system call `sched_yield` which relinquishes the CPU entirely, allowing the scheduler to run other threads.
 - if we kept spinning until spins is bigger than both maxSpins and maxYield we'll stop busy waiting and put the thread to sleep using the futex implementation which associates the address of the lock with a list of threads that waits for that lock and wakes a sleeping thread on a lock release event. to enable futex wait, the thread sets the wait bit on the lock, to signal the threads that holds the lock that some threads are asleep waiting for the lock. 
-- node - it's not clear to me why memory_order_relaxed is used to store the waitBit as it doens't guarantee any synchronization, resulting in an opportunity 
+- node - it's not clear to me why memory_order_relaxed is used to store the waitBit as it doesn't guarantee any synchronization, resulting in an opportunity for the releasing thread to miss the update to my understanding.
  
  - List item
 
@@ -256,11 +256,10 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTExODM2NDEzMDUsMjMyNTk1NTA0LC04MD
-k5NDQ1ODcsLTU2OTkzMzc4LDUwNjQ2NTcwMyw2MzkxODYzMjcs
-LTEzODk2MTEwOTksNzI5NTM0MTYwLC0xNzU1ODcxNzYwLDg4Mj
-Q1ODgyNCwtMTMyODkyNjIxNywtMTU0OTEzMjM1MSwyMDQ2NTA4
-MjI2LC04Mjc5OTAxMjYsLTE5NTYyMTExNjUsLTE4MDg2MjIxNT
-IsLTI5Njk1MTgxNSwxOTYwOTEzODc1LDEzNzQ1NTQzNjBdfQ==
-
+eyJoaXN0b3J5IjpbMTAyNTY0Njc5NSwyMzI1OTU1MDQsLTgwOT
+k0NDU4NywtNTY5OTMzNzgsNTA2NDY1NzAzLDYzOTE4NjMyNywt
+MTM4OTYxMTA5OSw3Mjk1MzQxNjAsLTE3NTU4NzE3NjAsODgyND
+U4ODI0LC0xMzI4OTI2MjE3LC0xNTQ5MTMyMzUxLDIwNDY1MDgy
+MjYsLTgyNzk5MDEyNiwtMTk1NjIxMTE2NSwtMTgwODYyMjE1Mi
+wtMjk2OTUxODE1LDE5NjA5MTM4NzUsMTM3NDU1NDM2MF19
 -->
