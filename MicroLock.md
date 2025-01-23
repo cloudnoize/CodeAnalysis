@@ -244,7 +244,7 @@ Finally, some action, let's see
 - Performs a loop, for each time the lock is locked increment the spins counter and perform a wait based in the spins value:
 - `if spins is lower than masSpins perform folly::asm_volatile_pause()` we didn't execute many wait rounds, there is hope to get the lock with short wait, it instructs the cpu to execute some pause instruction without performing context switch.
 - `if spins is larger than maxSpins perform yield` might result in an expensive system call `sched_yield` which relinquishes the CPU entirely, allowing the scheduler to run other threads.
-- if we kept spinning until spins is bigger than both maxSpins and maxYield we'll stop busy waiting and put the thread to sleep using the futex implementation which associates the address of the lock with a list of threads that waits for that lock and wakes a sleeping thread on a lock release event. to enable futex wait, 
+- if we kept spinning until spins is bigger than both maxSpins and maxYield we'll stop busy waiting and put the thread to sleep using the futex implementation which associates the address of the lock with a list of threads that waits for that lock and wakes a sleeping thread on a lock release event. to enable futex wait, the thread sets the wait bit on the lock, to signal the threads that holds the lock that some threads are asleep waiting for the lock. 
  
  - List item
 
@@ -255,7 +255,7 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTMxNDg4Mjk2LC04MDk5NDQ1ODcsLTU2OT
+eyJoaXN0b3J5IjpbMjMyNTk1NTA0LC04MDk5NDQ1ODcsLTU2OT
 kzMzc4LDUwNjQ2NTcwMyw2MzkxODYzMjcsLTEzODk2MTEwOTks
 NzI5NTM0MTYwLC0xNzU1ODcxNzYwLDg4MjQ1ODgyNCwtMTMyOD
 kyNjIxNywtMTU0OTEzMjM1MSwyMDQ2NTA4MjI2LC04Mjc5OTAx
