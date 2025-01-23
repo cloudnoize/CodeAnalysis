@@ -196,37 +196,21 @@ Finally, some action, let's see
 	    unsigned  baseShift,
 	    unsigned  maxSpins,
 	    unsigned  maxYields) noexcept {
-   
     uint32_t newWord;
-    
     unsigned spins =  0;
-    
     uint32_t heldBit =  1  << baseShift;
-    
     uint32_t waitBit = heldBit <<  1;
-    
     uint32_t needWaitBit =  0;
     
-      
-    
     retry:
-    
     if ((oldWord & heldBit) !=  0) {
-    
-    ++spins;
-    
-    if (spins > maxSpins + maxYields) {
-    
-    // Somebody appears to have the lock. Block waiting for the
-    
-    // holder to unlock the lock. We set heldbit(slot) so that the
-    
-    // lock holder knows to FUTEX_WAKE us.
-    
-    newWord = oldWord | waitBit;
-    
-    if (newWord != oldWord) {
-    
+	    ++spins;
+	    if (spins > maxSpins + maxYields) {
+		    // Somebody appears to have the lock. Block waiting for the
+		    // holder to unlock the lock. We set heldbit(slot) so that the
+		    // lock holder knows to FUTEX_WAKE us. 
+	    newWord = oldWord | waitBit;
+	    if (newWord != oldWord) {
     if (!wordPtr->compare_exchange_weak(
     
     oldWord,
@@ -296,9 +280,9 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzMjk0OTYwMDUsNjM5MTg2MzI3LC0xMz
-g5NjExMDk5LDcyOTUzNDE2MCwtMTc1NTg3MTc2MCw4ODI0NTg4
-MjQsLTEzMjg5MjYyMTcsLTE1NDkxMzIzNTEsMjA0NjUwODIyNi
-wtODI3OTkwMTI2LC0xOTU2MjExMTY1LC0xODA4NjIyMTUyLC0y
-OTY5NTE4MTUsMTk2MDkxMzg3NSwxMzc0NTU0MzYwXX0=
+eyJoaXN0b3J5IjpbLTMwNDc5NDIxOSw2MzkxODYzMjcsLTEzOD
+k2MTEwOTksNzI5NTM0MTYwLC0xNzU1ODcxNzYwLDg4MjQ1ODgy
+NCwtMTMyODkyNjIxNywtMTU0OTEzMjM1MSwyMDQ2NTA4MjI2LC
+04Mjc5OTAxMjYsLTE5NTYyMTExNjUsLTE4MDg2MjIxNTIsLTI5
+Njk1MTgxNSwxOTYwOTEzODc1LDEzNzQ1NTQzNjBdfQ==
 -->
