@@ -189,7 +189,7 @@ Finally, some action, let's see
  - if locking fails, we degrade to the **slowpath** locking, passing it the  `MaxSpins, MaxYields` template parameters which defies the behaviour of the slow path 
  - I don't understand the assertion and comment above the call  `lockSlowPath doesn't call waitBit(); it just shifts...`  i..e. why not use waitBit() . 
  - --
-- lockSlowPath() - Preforms few waiting strategies for the lock to be free.
+- **lockSlowPath**() - Preforms few waiting strategies for the lock to be free.
 -   
 
 
@@ -240,8 +240,9 @@ Finally, some action, let's see
       }
       return decodeDataFromWord(newWord, baseShift);
     }
+    
 - Performs a loop, for each time the lock is locked increment the spins counter and perform a wait based in the spins value:
-	- 
+- 
  
  - List item
 
@@ -252,10 +253,10 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTc5MDU5MTMzMiwtODA5OTQ0NTg3LC01Nj
-k5MzM3OCw1MDY0NjU3MDMsNjM5MTg2MzI3LC0xMzg5NjExMDk5
-LDcyOTUzNDE2MCwtMTc1NTg3MTc2MCw4ODI0NTg4MjQsLTEzMj
-g5MjYyMTcsLTE1NDkxMzIzNTEsMjA0NjUwODIyNiwtODI3OTkw
-MTI2LC0xOTU2MjExMTY1LC0xODA4NjIyMTUyLC0yOTY5NTE4MT
-UsMTk2MDkxMzg3NSwxMzc0NTU0MzYwXX0=
+eyJoaXN0b3J5IjpbNDczMTc4MzM0LC04MDk5NDQ1ODcsLTU2OT
+kzMzc4LDUwNjQ2NTcwMyw2MzkxODYzMjcsLTEzODk2MTEwOTks
+NzI5NTM0MTYwLC0xNzU1ODcxNzYwLDg4MjQ1ODgyNCwtMTMyOD
+kyNjIxNywtMTU0OTEzMjM1MSwyMDQ2NTA4MjI2LC04Mjc5OTAx
+MjYsLTE5NTYyMTExNjUsLTE4MDg2MjIxNTIsLTI5Njk1MTgxNS
+wxOTYwOTEzODc1LDEzNzQ1NTQzNjBdfQ==
 -->
