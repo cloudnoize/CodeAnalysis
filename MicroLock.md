@@ -211,23 +211,15 @@ Finally, some action, let's see
 		    // lock holder knows to FUTEX_WAKE us. 
 	    newWord = oldWord | waitBit;
 	    if (newWord != oldWord) {
-    if (!wordPtr->compare_exchange_weak(
-    
-    oldWord,
-    
-    newWord,
-    
-    std::memory_order_relaxed,
-    
-    std::memory_order_relaxed)) {
-    
-    goto  retry;
-    
-    }
-    
-    }
-    
-    detail::futexWait(wordPtr, newWord, heldBit);
+		    if (!wordPtr->compare_exchange_weak( 
+			    oldWord, 
+			    newWord,
+			    std::memory_order_relaxed,
+			    std::memory_order_relaxed)) {
+		    goto  retry;
+		}
+	  }
+	    detail::futexWait(wordPtr, newWord, heldBit);
     
     needWaitBit  = waitBit;
     
@@ -280,7 +272,7 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTMwNDc5NDIxOSw2MzkxODYzMjcsLTEzOD
+eyJoaXN0b3J5IjpbLTkyODkzNzE5Nyw2MzkxODYzMjcsLTEzOD
 k2MTEwOTksNzI5NTM0MTYwLC0xNzU1ODcxNzYwLDg4MjQ1ODgy
 NCwtMTMyODkyNjIxNywtMTU0OTEzMjM1MSwyMDQ2NTA4MjI2LC
 04Mjc5OTAxMjYsLTE5NTYyMTExNjUsLTE4MDg2MjIxNTIsLTI5
