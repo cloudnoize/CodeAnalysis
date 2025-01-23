@@ -189,80 +189,7 @@ Finally, some action, let's see
  - if locking fails, we degrade to the **slowpath** locking, passing it the  `MaxSpins, MaxYields` template parameters which defies the behaviour of the slow path 
  - I don't understand the assertion and comment above the call  `lockSlowPath doesn't call waitBit(); it just shifts...`  i..e. why not use waitBit() . 
  - --
-
-    uint8_t  MicroLockCore::lockSlowPath(
-	    uint32_t  oldWord,
-	    detail::Futex<>*  wordPtr,
-	    unsigned  baseShift,
-	    unsigned  maxSpins,
-	    unsigned  maxYields) noexcept {
-    uint32_t newWord;
-    unsigned spins =  0;
-    uint32_t heldBit =  1  << baseShift;
-    uint32_t waitBit = heldBit <<  1;
-    uint32_t needWaitBit =  0;
-    
-    retry:
-    if ((oldWord & heldBit) !=  0) {
-	    ++spins;
-	    if (spins > maxSpins + maxYields) {
-		    // Somebody appears to have the lock. Block waiting for the
-		    // holder to unlock the lock. We set heldbit(slot) so that the
-		    // lock holder knows to FUTEX_WAKE us. 
-	    newWord = oldWord | waitBit;
-	    if (newWord != oldWord) {
-		    if (!wordPtr->compare_exchange_weak( 
-			    oldWord, 
-			    newWord,
-			    std::memory_order_relaxed,
-			    std::memory_order_relaxed)) {
-		    goto  retry;
-		}
-	  }
-	    detail::futexWait(wordPtr, newWord, heldBit);
-    
-    needWaitBit  = waitBit;
-    
-    } else  if (spins > maxSpins) {
-    
-    // sched_yield(), but more portable
-    
-    std::this_thread::yield();
-    
-    } else {
-    
-    folly::asm_volatile_pause();
-    
-    }
-    
-    oldWord =  wordPtr->load(std::memory_order_relaxed);
-    
-    goto  retry;
-    
-    }
-    
-      
-    
-    newWord = oldWord | heldBit | needWaitBit;
-    
-    if (!wordPtr->compare_exchange_weak(
-    
-    oldWord,
-    
-    newWord,
-    
-    std::memory_order_acquire,
-    
-    std::memory_order_relaxed)) {
-    
-    goto  retry;
-    
-    }
-    
-    return  decodeDataFromWord(newWord, baseShift);
-    
-    }
-
+ 
  
  - List item
 
@@ -272,9 +199,9 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTkyODkzNzE5Nyw2MzkxODYzMjcsLTEzOD
-k2MTEwOTksNzI5NTM0MTYwLC0xNzU1ODcxNzYwLDg4MjQ1ODgy
-NCwtMTMyODkyNjIxNywtMTU0OTEzMjM1MSwyMDQ2NTA4MjI2LC
-04Mjc5OTAxMjYsLTE5NTYyMTExNjUsLTE4MDg2MjIxNTIsLTI5
-Njk1MTgxNSwxOTYwOTEzODc1LDEzNzQ1NTQzNjBdfQ==
+eyJoaXN0b3J5IjpbMzg2ODM2NDIwLDYzOTE4NjMyNywtMTM4OT
+YxMTA5OSw3Mjk1MzQxNjAsLTE3NTU4NzE3NjAsODgyNDU4ODI0
+LC0xMzI4OTI2MjE3LC0xNTQ5MTMyMzUxLDIwNDY1MDgyMjYsLT
+gyNzk5MDEyNiwtMTk1NjIxMTE2NSwtMTgwODYyMjE1MiwtMjk2
+OTUxODE1LDE5NjA5MTM4NzUsMTM3NDU1NDM2MF19
 -->
