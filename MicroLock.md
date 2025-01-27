@@ -142,6 +142,10 @@ I'll go over the method in incremental order i.e. from low level functionality t
 	    static_cast<uint8_t>(word  >>  baseShift) >>  kNumLockBits);
     }
 Shift the byte of the lock to the right until it's  the most right bit, then shift the bits of the user data until they are the most right bits, and return the byte. 
+
+---
+
+
  
 
 ---
@@ -259,11 +263,11 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIyMjc4NTM5MCw3MzU4MzM0OTQsMTAyNT
-Y0Njc5NSwyMzI1OTU1MDQsLTgwOTk0NDU4NywtNTY5OTMzNzgs
-NTA2NDY1NzAzLDYzOTE4NjMyNywtMTM4OTYxMTA5OSw3Mjk1Mz
-QxNjAsLTE3NTU4NzE3NjAsODgyNDU4ODI0LC0xMzI4OTI2MjE3
-LC0xNTQ5MTMyMzUxLDIwNDY1MDgyMjYsLTgyNzk5MDEyNiwtMT
-k1NjIxMTE2NSwtMTgwODYyMjE1MiwtMjk2OTUxODE1LDE5NjA5
-MTM4NzVdfQ==
+eyJoaXN0b3J5IjpbMTQyNzU3OTI0OSwtMjIyNzg1MzkwLDczNT
+gzMzQ5NCwxMDI1NjQ2Nzk1LDIzMjU5NTUwNCwtODA5OTQ0NTg3
+LC01Njk5MzM3OCw1MDY0NjU3MDMsNjM5MTg2MzI3LC0xMzg5Nj
+ExMDk5LDcyOTUzNDE2MCwtMTc1NTg3MTc2MCw4ODI0NTg4MjQs
+LTEzMjg5MjYyMTcsLTE1NDkxMzIzNTEsMjA0NjUwODIyNiwtOD
+I3OTkwMTI2LC0xOTU2MjExMTY1LC0xODA4NjIyMTUyLC0yOTY5
+NTE4MTVdfQ==
 -->
