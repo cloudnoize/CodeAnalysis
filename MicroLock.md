@@ -170,7 +170,7 @@ void MicroLockCore::unlockAndStoreWithModifier(Func modifier) noexcept {
  - it loads the word that holds the lock, is uses `memory_order_relaxed` which doesn't guarantee to read the latest value that was written to that address,  the lack of synchronization improves performance.
  - To my understanding the assertion `assert(oldWord  &  heldBit())` specifies that it's not defined to call unlock if that thread is not lock owner i.e. the assumption is a synchronized call to unlock without possible race conditions.
  - next the user function modifies the old value, to the  user value, the `~(heldBit() |  waitBit())` clears the held and wait bits.
-- `compare_exchange_weak` tries to replace the oldWord with the new word, the memory order on success is `memory_order_release` which ensures that the compare operation is done on the latest value that is wrt
+- `compare_exchange_weak` tries to replace the oldWord with the new word, the memory order on success is `memory_order_release` which ensures that the compare operation is done on the latest value that is written to the word address, furthermore it synchronizes all future reads on that value to read the new value. this enable the usage of the relaxed ordering 
 ---
 ## Class MicroLockBase
 All the functions till now defines the infrastructure to manipulate the lock, now let's see how it's implemented.
@@ -286,11 +286,11 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNTc4Mzg3MjU5LC0xNDcxNzU2NTA0LDEwMD
-EzNDA5NzksMTQyNzU3OTI0OSwtMjIyNzg1MzkwLDczNTgzMzQ5
-NCwxMDI1NjQ2Nzk1LDIzMjU5NTUwNCwtODA5OTQ0NTg3LC01Nj
-k5MzM3OCw1MDY0NjU3MDMsNjM5MTg2MzI3LC0xMzg5NjExMDk5
-LDcyOTUzNDE2MCwtMTc1NTg3MTc2MCw4ODI0NTg4MjQsLTEzMj
-g5MjYyMTcsLTE1NDkxMzIzNTEsMjA0NjUwODIyNiwtODI3OTkw
-MTI2XX0=
+eyJoaXN0b3J5IjpbLTIwMDc5OTY4NzUsLTE0NzE3NTY1MDQsMT
+AwMTM0MDk3OSwxNDI3NTc5MjQ5LC0yMjI3ODUzOTAsNzM1ODMz
+NDk0LDEwMjU2NDY3OTUsMjMyNTk1NTA0LC04MDk5NDQ1ODcsLT
+U2OTkzMzc4LDUwNjQ2NTcwMyw2MzkxODYzMjcsLTEzODk2MTEw
+OTksNzI5NTM0MTYwLC0xNzU1ODcxNzYwLDg4MjQ1ODgyNCwtMT
+MyODkyNjIxNywtMTU0OTEzMjM1MSwyMDQ2NTA4MjI2LC04Mjc5
+OTAxMjZdfQ==
 -->
