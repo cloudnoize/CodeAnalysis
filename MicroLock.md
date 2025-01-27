@@ -170,7 +170,8 @@ void MicroLockCore::unlockAndStoreWithModifier(Func modifier) noexcept {
  - it loads the word that holds the lock, is uses `memory_order_relaxed` which doesn't guarantee to read the latest value that was written to that address,  the lack of synchronization improves performance.
  - To my understanding the assertion `assert(oldWord  &  heldBit())` specifies that it's not defined to call unlock if that thread is not lock owner i.e. the assumption is a synchronized call to unlock without possible race conditions.
  - next the user function modifies the old value, to the  user value, the `~(heldBit() |  waitBit())` clears the held and wait bits.
-- `compare_exchange_weak` tries to replace the oldWord with the new word, the memory order on success is `memory_order_release` which ensures that the compare operation is done on the latest value that is written to the word address, furthermore it synchronizes all future reads on that value to read the new value. this enable the usage of the relaxed ordering 
+- loop on `compare_exchange_weak` which tries to replace the oldWord with the new word, the memory order on success is `memory_order_release` which ensures that the compare operation is done on the latest value that is written to the word address, furthermore it synchronizes all future reads on that value to read the new value. this enable the usage of the relaxed load we saw before.
+- after unlocking, check if at least one thread is sleeping waiting for the lock, if so call 
 ---
 ## Class MicroLockBase
 All the functions till now defines the infrastructure to manipulate the lock, now let's see how it's implemented.
@@ -286,11 +287,11 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwMDc5OTY4NzUsLTE0NzE3NTY1MDQsMT
-AwMTM0MDk3OSwxNDI3NTc5MjQ5LC0yMjI3ODUzOTAsNzM1ODMz
-NDk0LDEwMjU2NDY3OTUsMjMyNTk1NTA0LC04MDk5NDQ1ODcsLT
-U2OTkzMzc4LDUwNjQ2NTcwMyw2MzkxODYzMjcsLTEzODk2MTEw
-OTksNzI5NTM0MTYwLC0xNzU1ODcxNzYwLDg4MjQ1ODgyNCwtMT
-MyODkyNjIxNywtMTU0OTEzMjM1MSwyMDQ2NTA4MjI2LC04Mjc5
-OTAxMjZdfQ==
+eyJoaXN0b3J5IjpbLTM0MzkzNzU1NSwtMTQ3MTc1NjUwNCwxMD
+AxMzQwOTc5LDE0Mjc1NzkyNDksLTIyMjc4NTM5MCw3MzU4MzM0
+OTQsMTAyNTY0Njc5NSwyMzI1OTU1MDQsLTgwOTk0NDU4NywtNT
+Y5OTMzNzgsNTA2NDY1NzAzLDYzOTE4NjMyNywtMTM4OTYxMTA5
+OSw3Mjk1MzQxNjAsLTE3NTU4NzE3NjAsODgyNDU4ODI0LC0xMz
+I4OTI2MjE3LC0xNTQ5MTMyMzUxLDIwNDY1MDgyMjYsLTgyNzk5
+MDEyNl19
 -->
