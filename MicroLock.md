@@ -166,6 +166,7 @@ void MicroLockCore::unlockAndStoreWithModifier(Func modifier) noexcept {
 }
 
  ```
+ - The method accepts a function object to enable the user the opportunity to store a value in the user data part of the lock 
 
 ---
 ## Class MicroLockBase
@@ -282,7 +283,7 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTAzMTUyODExMSwxNDI3NTc5MjQ5LC0yMj
+eyJoaXN0b3J5IjpbMTg4NjQ2NzA1MiwxNDI3NTc5MjQ5LC0yMj
 I3ODUzOTAsNzM1ODMzNDk0LDEwMjU2NDY3OTUsMjMyNTk1NTA0
 LC04MDk5NDQ1ODcsLTU2OTkzMzc4LDUwNjQ2NTcwMyw2MzkxOD
 YzMjcsLTEzODk2MTEwOTksNzI5NTM0MTYwLC0xNzU1ODcxNzYw
