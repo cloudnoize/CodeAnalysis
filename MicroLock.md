@@ -168,7 +168,7 @@ void MicroLockCore::unlockAndStoreWithModifier(Func modifier) noexcept {
  ```
  - The method accepts a function object to enable the user the opportunity to store a value in the user data part of the lock.
  - it loads the word that holds the lock, is uses `memory_order_relaxed` which doesn't guarantee to read the latest value that was written to that address,  the lack of synchronization improves performance.
- - 
+ - To my understanding the assertion `assert(oldWord  &  heldBit())` specifies that it's not defined to call unlock if that thread is not lock owner i.e. the assumption is a synchronized call to unlock 
 
 ---
 ## Class MicroLockBase
@@ -285,11 +285,11 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE0NzE3NTY1MDQsMTAwMTM0MDk3OSwxND
-I3NTc5MjQ5LC0yMjI3ODUzOTAsNzM1ODMzNDk0LDEwMjU2NDY3
-OTUsMjMyNTk1NTA0LC04MDk5NDQ1ODcsLTU2OTkzMzc4LDUwNj
-Q2NTcwMyw2MzkxODYzMjcsLTEzODk2MTEwOTksNzI5NTM0MTYw
-LC0xNzU1ODcxNzYwLDg4MjQ1ODgyNCwtMTMyODkyNjIxNywtMT
-U0OTEzMjM1MSwyMDQ2NTA4MjI2LC04Mjc5OTAxMjYsLTE5NTYy
-MTExNjVdfQ==
+eyJoaXN0b3J5IjpbODIzMTAyOTI4LC0xNDcxNzU2NTA0LDEwMD
+EzNDA5NzksMTQyNzU3OTI0OSwtMjIyNzg1MzkwLDczNTgzMzQ5
+NCwxMDI1NjQ2Nzk1LDIzMjU5NTUwNCwtODA5OTQ0NTg3LC01Nj
+k5MzM3OCw1MDY0NjU3MDMsNjM5MTg2MzI3LC0xMzg5NjExMDk5
+LDcyOTUzNDE2MCwtMTc1NTg3MTc2MCw4ODI0NTg4MjQsLTEzMj
+g5MjYyMTcsLTE1NDkxMzIzNTEsMjA0NjUwODIyNiwtODI3OTkw
+MTI2XX0=
 -->
