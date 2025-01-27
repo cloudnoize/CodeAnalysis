@@ -167,7 +167,7 @@ void MicroLockCore::unlockAndStoreWithModifier(Func modifier) noexcept {
 
  ```
  - The method accepts a function object to enable the user the opportunity to store a value in the user data part of the lock.
- - it loads the word that holds the lock, is uses memory_order_relaxed which doesn't guarantee to read the latest value that was written to that address, the unlock  
+ - it loads the word that holds the lock, is uses `memory_order_relaxed` which doesn't guarantee to read the latest value that was written to that address,  the lack of synchronizatoi
 
 ---
 ## Class MicroLockBase
@@ -284,7 +284,7 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTMyNzQzMzI0LDEwMDEzNDA5NzksMTQyNz
+eyJoaXN0b3J5IjpbLTQwMjIyNDI4LDEwMDEzNDA5NzksMTQyNz
 U3OTI0OSwtMjIyNzg1MzkwLDczNTgzMzQ5NCwxMDI1NjQ2Nzk1
 LDIzMjU5NTUwNCwtODA5OTQ0NTg3LC01Njk5MzM3OCw1MDY0Nj
 U3MDMsNjM5MTg2MzI3LC0xMzg5NjExMDk5LDcyOTUzNDE2MCwt
