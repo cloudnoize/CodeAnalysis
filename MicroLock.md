@@ -171,7 +171,8 @@ void MicroLockCore::unlockAndStoreWithModifier(Func modifier) noexcept {
  - To my understanding the assertion `assert(oldWord  &  heldBit())` specifies that it's not defined to call unlock if that thread is not lock owner i.e. the assumption is a synchronized call to unlock without possible race conditions.
  - next the user function modifies the old value, to the  user value, the `~(heldBit() |  waitBit())` clears the held and wait bits.
 - loop on `compare_exchange_weak` which tries to replace the oldWord with the new word, the memory order on success is `memory_order_release` which ensures that the compare operation is done on the latest value that is written to the word address, furthermore it synchronizes all future reads on that value to read the new value. this enable the usage of the relaxed load we saw before.
-- after unlocking, check if at least one thread is sleeping waiting for the lock, if so call 
+- after unlocking, check if at least one thread is sleeping waiting for the lock, if so call the futexWake to wake it. 
+- Once a thread is woken it will try to lock the lock, we'll see that code later below.
 ---
 ## Class MicroLockBase
 All the functions till now defines the infrastructure to manipulate the lock, now let's see how it's implemented.
@@ -287,7 +288,7 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTM0MzkzNzU1NSwtMTQ3MTc1NjUwNCwxMD
+eyJoaXN0b3J5IjpbMTE2NjI4NjY0OCwtMTQ3MTc1NjUwNCwxMD
 AxMzQwOTc5LDE0Mjc1NzkyNDksLTIyMjc4NTM5MCw3MzU4MzM0
 OTQsMTAyNTY0Njc5NSwyMzI1OTU1MDQsLTgwOTk0NDU4NywtNT
 Y5OTMzNzgsNTA2NDY1NzAzLDYzOTE4NjMyNywtMTM4OTYxMTA5
