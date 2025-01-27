@@ -145,7 +145,26 @@ Shift the byte of the lock to the right until it's  the most right bit, then shi
 
 ---
 
+ 
  ```
+ template <typename Func>
+void MicroLockCore::unlockAndStoreWithModifier(Func modifier) noexcept {
+    detail::Futex<>* wordPtr = word();
+    uint32_t oldWord;
+    uint32_t newWord;
+
+    oldWord = wordPtr->load(std::memory_order_relaxed);
+    do {
+        assert(oldWord & heldBit());
+        newWord = modifier(oldWord) & ~(heldBit() | waitBit());
+    } while (!wordPtr->compare_exchange_weak(
+        oldWord, newWord, std::memory_order_release, std::memory_order_relaxed));
+
+    if (oldWord & waitBit()) {
+        detail::futexWake(wordPtr, 1, heldBit());
+    }
+}
+
  ```
 
 ---
@@ -263,7 +282,7 @@ Finally, some action, let's see
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQyNzkxMjY3MywxNDI3NTc5MjQ5LC0yMj
+eyJoaXN0b3J5IjpbMTAzMTUyODExMSwxNDI3NTc5MjQ5LC0yMj
 I3ODUzOTAsNzM1ODMzNDk0LDEwMjU2NDY3OTUsMjMyNTk1NTA0
 LC04MDk5NDQ1ODcsLTU2OTkzMzc4LDUwNjQ2NTcwMyw2MzkxOD
 YzMjcsLTEzODk2MTEwOTksNzI5NTM0MTYwLC0xNzU1ODcxNzYw
