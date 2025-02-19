@@ -130,6 +130,70 @@ the operations done are:</p>
 </li>
 </ol>
 <p>The result of the function is a buffer of size X bytes that is propotional to the number of input keys, where each key has K bits that are set to 1 across that buffer.</p>
+<hr>
+<pre><code>static  uint32_t  BloomHash(const  Slice&amp;  key) {
+    return  Hash(key.data(), key.size(), 0xbc9f1d34);
+}
+
+uint32_t Hash(const char* data, size_t n, uint32_t seed) {
+  // Similar to murmur hash
+  const uint32_t m = 0xc6a4a793;
+  const uint32_t r = 24;
+  const char* limit = data + n;
+  uint32_t h = seed ^ (n * m);
+
+  // Pick up four bytes at a time
+  while (limit - data &gt;= 4) {
+    uint32_t w = DecodeFixed32(data);
+    data += 4;
+    h += w;
+    h *= m;
+    h ^= (h &gt;&gt; 16);
+  }
+
+  // Pick up remaining bytes
+  switch (limit - data) {
+    case 3:
+      h += static_cast&lt;uint8_t&gt;(data[2]) &lt;&lt; 16;
+      [[fallthrough]];
+    case 2:
+      h += static_cast&lt;uint8_t&gt;(data[1]) &lt;&lt; 8;
+      [[fallthrough]];
+    case 1:
+      h += static_cast&lt;uint8_t&gt;(data[0]);
+      h *= m;
+      h ^= (h &gt;&gt; r);
+      break;
+  }
+  return h;
+}
+</code></pre>
+<p>Used to generate the initial hash value that is used in to set the bits in the bloom filter.<br>
+The hash is a variant of the <a href="https://en.wikipedia.org/wiki/MurmurHash">Murmur hash</a> algorithm, which is a non cryptographic, fast with low collision rate, excellent for applications such as hash tables, indexing, and bloom filters.<br>
+it uses Uses multiplication and bit shifts to spread entropy across bits</p>
+<ul>
+<li>
+<p><code>const uint32_t m = 0xc6a4a793</code>  - 	The constant **<code>0xc6a4a793</code> is a multiplicative mixing constant used in , chosen because of its bit dispersion properties,  It helps ensure good avalanche behavior, meaning that even small differences in input cause large differences in output.</p>
+</li>
+<li>
+<p><code>const uint32_t r = 24</code> - seems like an important constant with cryptic name, but it just dermines how many bits to shift in case we have a tail of 1 byte when finishing the hashing.</p>
+</li>
+<li>
+<p><code>uint32_t h = seed ^ (n * m)</code> - generates the initial value of the hash.</p>
+</li>
+<li>
+<p>the loop iterates in chunks of 4 bytes, for each 4 bytes:</p>
+<ul>
+<li>decode the 4 bytes as uint32_t</li>
+<li>add the value to the current hash value.</li>
+<li>multiply the current hash value with the seed.</li>
+<li>shift the current hash 16 bits to the right and XOR with the current hash value.</li>
+</ul>
+</li>
+<li>
+<p>if the size is not a multiplication of 4, add the modulo , byte by bytes to the hash and perform the seed multiplication and bitshift by 24 bits and XOR.</p>
+</li>
+</ul>
 <blockquote>
 <p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p>
 </blockquote>
