@@ -1,8 +1,3 @@
----
-
-
----
-
 <hr>
 <h1 id="learning-from-google’s-code-exploring-bloom-filters-in-leveldb">Learning from Google’s Code: Exploring Bloom Filters in LevelDB</h1>
 <p>Reading code from Google is an invaluable way to learn how great minds think and write software. <strong>LevelDB</strong> code is a master class: it’s fast, lightweight, and designed for high-performance storage using <strong>log-structured merge-trees (LSM-trees)</strong>.</p>
@@ -14,7 +9,6 @@
 </ul>
 <p>The probability of a false positive depends on the <strong>configured size</strong> of the Bloom filter. Below, we’ll explore how Bloom filters are implemented in LevelDB and how they’re used.</p>
 <blockquote>
-<p><strong>TODO</strong> – Describe how the filter works (e.g., each key sets a bit in the filter for each hash function).</p>
 </blockquote>
 <hr>
 <h2 id="filterpolicy-interface">FilterPolicy Interface</h2>
