@@ -143,8 +143,8 @@ A single sharded cache</p>
 <ul>
 <li>size_t capacity, usage_ - When usage_ exceeds capacity_, eviction happens.</li>
 <li>mutex _ - guard for thread safety.</li>
-<li>LRUHandle  lru_ - a linked list of entries that are in the cache.</li>
-<li>LRUHandle  in_use_ - linked list of entries that are in use by clients.</li>
+<li>LRUHandle  lru_ - a circular linked list of entries that are in the cache.</li>
+<li>LRUHandle  in_use_ - a circular linked list of entries that are in use by clients.</li>
 <li>HandleTable  table_ - a hash table for fast lookup of entries (instead of linear search in the linked list).</li>
 </ul>
 <h3 id="methods-1">Methods</h3>
@@ -165,7 +165,7 @@ A single sharded cache</p>
 	in_use_<span class="token punctuation">.</span>prev  <span class="token operator">=</span>  <span class="token operator">&amp;</span>in_use_<span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<p>initialize the two linked list as circular lists where the next and prev point to itself.</p>
+<p>The circular linked list is implemented by using a sentinel node that its next and prev pointers are initialized to point to itself, it’s a neat trick that eliminate the need to handle special cases and creates the circular list automictically.</p>
 <h3 id="lru_append">LRU_Append</h3>
 <pre class=" language-cpp"><code class="prism  language-cpp"><span class="token keyword">void</span>  LRUCache<span class="token operator">::</span><span class="token function">LRU_Append</span><span class="token punctuation">(</span>LRUHandle<span class="token operator">*</span>  list<span class="token punctuation">,</span> LRUHandle<span class="token operator">*</span>  e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
 	<span class="token comment">// Make "e" newest entry by inserting just before *list</span>
@@ -175,6 +175,25 @@ A single sharded cache</p>
 	e<span class="token operator">-</span><span class="token operator">&gt;</span>next<span class="token operator">-</span><span class="token operator">&gt;</span>prev  <span class="token operator">=</span>  e<span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
 </code></pre>
+<p>The list is circular starting from the oldest items therefore new items are inserted as the last item pointing back to the <code>list</code> sentinel item.</p>
+<h3 id="lru_remove">LRU_Remove</h3>
+<pre class=" language-cpp"><code class="prism  language-cpp"><span class="token keyword">void</span>  LRUCache<span class="token operator">::</span><span class="token function">LRU_Remove</span><span class="token punctuation">(</span>LRUHandle<span class="token operator">*</span>  e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	e<span class="token operator">-</span><span class="token operator">&gt;</span>next<span class="token operator">-</span><span class="token operator">&gt;</span>prev  <span class="token operator">=</span>  e<span class="token operator">-</span><span class="token operator">&gt;</span>prev<span class="token punctuation">;</span>
+	e<span class="token operator">-</span><span class="token operator">&gt;</span>prev<span class="token operator">-</span><span class="token operator">&gt;</span>next  <span class="token operator">=</span>  e<span class="token operator">-</span><span class="token operator">&gt;</span>next<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>removes the entry from the list.</p>
+<h3 id="ref">Ref</h3>
+<pre class=" language-cpp"><code class="prism  language-cpp"><span class="token keyword">void</span>  LRUCache<span class="token operator">::</span><span class="token function">Ref</span><span class="token punctuation">(</span>LRUHandle<span class="token operator">*</span>  e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>e<span class="token operator">-</span><span class="token operator">&gt;</span>refs  <span class="token operator">==</span>  <span class="token number">1</span>  <span class="token operator">&amp;&amp;</span>  e<span class="token operator">-</span><span class="token operator">&gt;</span>in_cache<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment">// If on lru_ list, move to in_use_ list.</span>
+		<span class="token function">LRU_Remove</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">LRU_Append</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>in_use_<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+	e<span class="token operator">-</span><span class="token operator">&gt;</span>refs<span class="token operator">++</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Increment the reference count,<br>
+if the entry is in the <code>in_cache</code> list and its reference count is 1, move it to the in use list.</p>
 <h4 id="insert-1">insert</h4>
 <pre class=" language-cpp"><code class="prism  language-cpp">Cache<span class="token operator">::</span>Handle<span class="token operator">*</span> LRUCache<span class="token operator">::</span><span class="token function">Insert</span><span class="token punctuation">(</span><span class="token keyword">const</span> Slice<span class="token operator">&amp;</span> key<span class="token punctuation">,</span> uint32_t hash<span class="token punctuation">,</span> <span class="token keyword">void</span><span class="token operator">*</span> value<span class="token punctuation">,</span>
                                 size_t charge<span class="token punctuation">,</span>
