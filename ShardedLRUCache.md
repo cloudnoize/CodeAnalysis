@@ -194,7 +194,29 @@ A single sharded cache</p>
 </code></pre>
 <p>Increment the reference count,<br>
 if the entry is in the <code>in_cache</code> list and its reference count is 1, move it to the in use list.</p>
-<h4 id="insert-1">insert</h4>
+<h3 id="unref">Unref</h3>
+<pre class=" language-cpp"><code class="prism  language-cpp"><span class="token keyword">void</span>  LRUCache<span class="token operator">::</span><span class="token function">Unref</span><span class="token punctuation">(</span>LRUHandle<span class="token operator">*</span>  e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token function">assert</span><span class="token punctuation">(</span>e<span class="token operator">-</span><span class="token operator">&gt;</span>refs  <span class="token operator">&gt;</span>  <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	e<span class="token operator">-</span><span class="token operator">&gt;</span>refs<span class="token operator">--</span><span class="token punctuation">;</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>e<span class="token operator">-</span><span class="token operator">&gt;</span>refs  <span class="token operator">==</span>  <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment">// Deallocate.</span>
+		<span class="token function">assert</span><span class="token punctuation">(</span><span class="token operator">!</span>e<span class="token operator">-</span><span class="token operator">&gt;</span>in_cache<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token punctuation">(</span><span class="token operator">*</span>e<span class="token operator">-</span><span class="token operator">&gt;</span>deleter<span class="token punctuation">)</span><span class="token punctuation">(</span>e<span class="token operator">-</span><span class="token operator">&gt;</span><span class="token function">key</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> e<span class="token operator">-</span><span class="token operator">&gt;</span>value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">free</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span> <span class="token keyword">else</span>  <span class="token keyword">if</span> <span class="token punctuation">(</span>e<span class="token operator">-</span><span class="token operator">&gt;</span>in_cache  <span class="token operator">&amp;&amp;</span>  e<span class="token operator">-</span><span class="token operator">&gt;</span>refs  <span class="token operator">==</span>  <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token comment">// No longer in use; move to lru_ list.</span>
+		<span class="token function">LRU_Remove</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">LRU_Append</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>lru_<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Handles decrementing the reference count of the entry,</p>
+<ul>
+<li>asserts that the entry ref count is positive as zero ref count entries are deleted.</li>
+<li>decrement the ref count.</li>
+<li>if the ref count is zero, asserts that the entry is not in use by the cache, invoke the custom deleter callback that the user gave for this entry, and deallocate the memory.</li>
+<li>if the ref count is one and the entry is in the cache, remove it from the in use list and move to the lru list.</li>
+</ul>
+<h3 id="insert-1">insert</h3>
 <pre class=" language-cpp"><code class="prism  language-cpp">Cache<span class="token operator">::</span>Handle<span class="token operator">*</span> LRUCache<span class="token operator">::</span><span class="token function">Insert</span><span class="token punctuation">(</span><span class="token keyword">const</span> Slice<span class="token operator">&amp;</span> key<span class="token punctuation">,</span> uint32_t hash<span class="token punctuation">,</span> <span class="token keyword">void</span><span class="token operator">*</span> value<span class="token punctuation">,</span>
                                 size_t charge<span class="token punctuation">,</span>
                                 <span class="token keyword">void</span> <span class="token punctuation">(</span><span class="token operator">*</span>deleter<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">const</span> Slice<span class="token operator">&amp;</span> key<span class="token punctuation">,</span>
