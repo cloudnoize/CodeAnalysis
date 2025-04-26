@@ -216,6 +216,59 @@ if the entry is in the <code>in_cache</code> list and its reference count is 1, 
 <li>if the ref count is zero, asserts that the entry is not in use by the cache, invoke the custom deleter callback that the user gave for this entry, and deallocate the memory.</li>
 <li>if the ref count is one and the entry is in the cache, remove it from the in use list and move to the lru list.</li>
 </ul>
+<h3 id="lookup">LookUp</h3>
+<pre class=" language-cpp"><code class="prism  language-cpp">Cache<span class="token operator">::</span>Handle<span class="token operator">*</span>  LRUCache<span class="token operator">::</span><span class="token function">Lookup</span><span class="token punctuation">(</span><span class="token keyword">const</span>  Slice<span class="token operator">&amp;</span>  key<span class="token punctuation">,</span> uint32_t  hash<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	MutexLock  <span class="token function">l</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>mutex_<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	LRUHandle<span class="token operator">*</span>  e  <span class="token operator">=</span>  table_<span class="token punctuation">.</span><span class="token function">Lookup</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> hash<span class="token punctuation">)</span><span class="token punctuation">;</span>	
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>e  <span class="token operator">!=</span>  <span class="token keyword">nullptr</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token function">Ref</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+	<span class="token keyword">return</span>  <span class="token keyword">reinterpret_cast</span><span class="token operator">&lt;</span>Cache<span class="token operator">::</span>Handle<span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The public interface to find an item in the cache, for fast retrieval it uses the hash table to find the cached item.<br>
+If found it increments the reference count .<br>
+The return type is not the internal handle representation but the public opaque handle which is used by the client when calling to the cache APIs on that item.<br>
+This design is used to decouple the user code from the cache code, enabling changes without breaking the public interface,</p>
+<h3 id="release">Release</h3>
+<pre class=" language-cpp"><code class="prism  language-cpp"><span class="token keyword">void</span>  LRUCache<span class="token operator">::</span><span class="token function">Release</span><span class="token punctuation">(</span>Cache<span class="token operator">::</span>Handle<span class="token operator">*</span>  handle<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	MutexLock  <span class="token function">l</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>mutex_<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">Unref</span><span class="token punctuation">(</span><span class="token keyword">reinterpret_cast</span><span class="token operator">&lt;</span>LRUHandle<span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">(</span>handle<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The public api to release the cached item by the user, handling the opaque item pointer to the cache which is then casted to the concrete handler and caliing the UnRef with it.</p>
+<h3 id="erase-and-finisherase">Erase and FinishErase</h3>
+<pre class=" language-cpp"><code class="prism  language-cpp"><span class="token keyword">void</span>  LRUCache<span class="token operator">::</span><span class="token function">Erase</span><span class="token punctuation">(</span><span class="token keyword">const</span>  Slice<span class="token operator">&amp;</span>  key<span class="token punctuation">,</span> uint32_t  hash<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	MutexLock  <span class="token function">l</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>mutex_<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">FinishErase</span><span class="token punctuation">(</span>table_<span class="token punctuation">.</span><span class="token function">Remove</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> hash<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span> 
+
+<span class="token keyword">bool</span>  LRUCache<span class="token operator">::</span><span class="token function">FinishErase</span><span class="token punctuation">(</span>LRUHandle<span class="token operator">*</span>  e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>e  <span class="token operator">!=</span>  <span class="token keyword">nullptr</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token function">assert</span><span class="token punctuation">(</span>e<span class="token operator">-</span><span class="token operator">&gt;</span>in_cache<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">LRU_Remove</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		e<span class="token operator">-</span><span class="token operator">&gt;</span>in_cache  <span class="token operator">=</span>  <span class="token boolean">false</span><span class="token punctuation">;</span>
+		usage_  <span class="token operator">-</span><span class="token operator">=</span>  e<span class="token operator">-</span><span class="token operator">&gt;</span>charge<span class="token punctuation">;</span>
+		<span class="token function">Unref</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+	<span class="token keyword">return</span>  e  <span class="token operator">!=</span>  <span class="token keyword">nullptr</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Erase only proxies the removed Handle from the hash table to the finish erase that removes the handle from the in use list i.e. active cache , it then calls Unref on it which decides whether to delete the Handle if if it’s reference count is 0.</p>
+<h3 id="prune">Prune</h3>
+<pre class=" language-cpp"><code class="prism  language-cpp"><span class="token keyword">void</span>  LRUCache<span class="token operator">::</span><span class="token function">Prune</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	MutexLock  <span class="token function">l</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>mutex_<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">while</span> <span class="token punctuation">(</span>lru_<span class="token punctuation">.</span>next  <span class="token operator">!=</span>  <span class="token operator">&amp;</span>lru_<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		LRUHandle<span class="token operator">*</span>  e  <span class="token operator">=</span>  lru_<span class="token punctuation">.</span>next<span class="token punctuation">;</span>
+		<span class="token function">assert</span><span class="token punctuation">(</span>e<span class="token operator">-</span><span class="token operator">&gt;</span>refs  <span class="token operator">==</span>  <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">bool</span>  erased  <span class="token operator">=</span>  <span class="token function">FinishErase</span><span class="token punctuation">(</span>table_<span class="token punctuation">.</span><span class="token function">Remove</span><span class="token punctuation">(</span>e<span class="token operator">-</span><span class="token operator">&gt;</span><span class="token function">key</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> e<span class="token operator">-</span><span class="token operator">&gt;</span>hash<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>erased<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment">// to avoid unused variable when compiled NDEBUG</span>
+			<span class="token function">assert</span><span class="token punctuation">(</span>erased<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token punctuation">}</span>
+	<span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The cache logic manages the cached items in lru list the items that are not in use any more, ordered from the oldest</p>
 <h3 id="insert-1">insert</h3>
 <pre class=" language-cpp"><code class="prism  language-cpp">Cache<span class="token operator">::</span>Handle<span class="token operator">*</span> LRUCache<span class="token operator">::</span><span class="token function">Insert</span><span class="token punctuation">(</span><span class="token keyword">const</span> Slice<span class="token operator">&amp;</span> key<span class="token punctuation">,</span> uint32_t hash<span class="token punctuation">,</span> <span class="token keyword">void</span><span class="token operator">*</span> value<span class="token punctuation">,</span>
                                 size_t charge<span class="token punctuation">,</span>
@@ -263,16 +316,21 @@ if the entry is in the <code>in_cache</code> list and its reference count is 1, 
 <li>allocate a new LRUHandle , recall the trick where the key allocation array is done dynamically at the end of the struct, this is the reason for the <code>- 1 + key.size())</code> when defining the size for the malloc.</li>
 <li>some initializations happen next where the more interesting are the deleter which is a callback to delete (TODO) , charge which let the user determine the entry “cost” in the cache, and refs for reference counting.</li>
 <li><code>std::memcpy(e-&gt;key_data, key.data(), key.size())</code> copies the key to the handle, while the value is not copied by pointing to the original value as keys are much shorter.</li>
-<li>if the capacity is greater than zero:
+<li>if the cache capacity is greater than zero:
 <ul>
 <li>increment the ref count.</li>
 <li>mark the entry as in the cache.</li>
 <li>append the entry to the in use list.</li>
-<li>Add to the usage the given charge.</li>
-<li></li>
+<li>Add to the usage the given charge, note that charge is an input by the user i.e, the user can determine the “cost” of the entry and whether caching it should result in removing other elements.</li>
+<li>Insert the entry to the hash table as well for fast lookup, in case the insert is an update to an existing key, the hash table insert will return a pointer to the old entry. which will be erased when calling finishErase on it.</li>
+<li>TODO - why can capacity be 0.</li>
+<li>on finish the item insertion the cache checks whether the usage threshold exceeded, if yes and the lru list is not empty , iterate over the lru list from the oldest element, and call finishErase on eaach item until usage is less then capacity or the entire lru list has been erased.</li>
 </ul>
 </li>
 </ul>
+<hr>
+<h2 id="shardedlrucache">ShardedLRUCache</h2>
+<p>by now we covered the infrastructure and logic to of single</p>
 <blockquote>
 <p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p>
 </blockquote>
