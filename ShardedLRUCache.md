@@ -3,7 +3,38 @@
 
 ---
 
-<h1 id="leveldb-shardedlrucache">LevelDB ShardedLRUCache</h1>
+<h1 id="leveldb-sharded-lru-cache">LevelDB Sharded LRU cache</h1>
+<p>From the design of the interface, its encapsulation and implementation, this code is beautiful and highly educational.</p>
+<h2 id="interface">Interface</h2>
+<pre class=" language-cpp"><code class="prism  language-cpp"><span class="token keyword">class</span> <span class="token class-name">LEVELDB_EXPORT</span> Cache<span class="token punctuation">;</span>
+
+LEVELDB_EXPORT Cache<span class="token operator">*</span> <span class="token function">NewLRUCache</span><span class="token punctuation">(</span>size_t capacity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">class</span> <span class="token class-name">LEVELDB_EXPORT</span> Cache <span class="token punctuation">{</span>
+ <span class="token keyword">public</span><span class="token operator">:</span>
+  <span class="token function">Cache</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token keyword">default</span><span class="token punctuation">;</span>
+  <span class="token function">Cache</span><span class="token punctuation">(</span><span class="token keyword">const</span> Cache<span class="token operator">&amp;</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token keyword">delete</span><span class="token punctuation">;</span>
+  Cache<span class="token operator">&amp;</span> <span class="token keyword">operator</span><span class="token operator">=</span><span class="token punctuation">(</span><span class="token keyword">const</span> Cache<span class="token operator">&amp;</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token keyword">delete</span><span class="token punctuation">;</span>
+  <span class="token keyword">virtual</span> <span class="token operator">~</span><span class="token function">Cache</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">struct</span> Handle <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">virtual</span> Handle<span class="token operator">*</span> <span class="token function">Insert</span><span class="token punctuation">(</span><span class="token keyword">const</span> Slice<span class="token operator">&amp;</span> key<span class="token punctuation">,</span> <span class="token keyword">void</span><span class="token operator">*</span> value<span class="token punctuation">,</span> size_t charge<span class="token punctuation">,</span>
+                         <span class="token keyword">void</span> <span class="token punctuation">(</span><span class="token operator">*</span>deleter<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">const</span> Slice<span class="token operator">&amp;</span> key<span class="token punctuation">,</span> <span class="token keyword">void</span><span class="token operator">*</span> value<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  <span class="token keyword">virtual</span> Handle<span class="token operator">*</span> <span class="token function">Lookup</span><span class="token punctuation">(</span><span class="token keyword">const</span> Slice<span class="token operator">&amp;</span> key<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  <span class="token keyword">virtual</span> <span class="token keyword">void</span> <span class="token function">Release</span><span class="token punctuation">(</span>Handle<span class="token operator">*</span> handle<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  <span class="token keyword">virtual</span> <span class="token keyword">void</span><span class="token operator">*</span> <span class="token function">Value</span><span class="token punctuation">(</span>Handle<span class="token operator">*</span> handle<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  <span class="token keyword">virtual</span> <span class="token keyword">void</span> <span class="token function">Erase</span><span class="token punctuation">(</span><span class="token keyword">const</span> Slice<span class="token operator">&amp;</span> key<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  <span class="token keyword">virtual</span> uint64_t <span class="token function">NewId</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  <span class="token keyword">virtual</span> <span class="token keyword">void</span> <span class="token function">Prune</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+  <span class="token keyword">virtual</span> size_t <span class="token function">TotalCharge</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">const</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+</code></pre>
+<p>The interface design employs a combination of the <strong>Factory Method</strong> and <strong>Pimpl (Opaque Pointer) Idiom</strong>. It defines a pure abstract <code>Cache</code> interface, exposing only a factory function (<code>NewLRUCache</code>) to create instances, while encapsulating all implementation details privately within the <code>.cpp</code> file to achieve complete separation between interface and implementation.<br>
+To further strengthen decoupling, cached items are represented by an opaque <code>Handle</code> struct, through which all user interactions with the cache are performed. The underlying implementation internally maps the <code>Handle</code> to its concrete representation.<br>
+This design results in a highly stable and minimal interface that remains unaffected by changes to the implementation, eliminating the need for user code recompilation and preserving ABI compatibility.</p>
+<h2 id="implementation">implementation</h2>
 <p>Before diving to the cache, we’ll review some data structures that support the implementation.</p>
 <h3 id="lruhandle">LRUHandle</h3>
 <p>Represents an entry in the cache</p>
@@ -329,8 +360,27 @@ This design is used to decouple the user code from the cache code, enabling chan
 </li>
 </ul>
 <hr>
-<h2 id="shardedlrucache">ShardedLRUCache</h2>
-<p>by now we covered the infrastructure and logic to of single</p>
+<h2 id="sharding-the-cache">Sharding the cache</h2>
+<p>by now we covered the infrastructure and logic to of single cache, the following class implements the sharding i.e. using multiple instances of the cache to scale the cache.<br>
+It implements the cache interface as well to abstract the cache and expose it as a monolitic cache to the user.</p>
+<h3 id="class-sahrdedlrucache">Class SahrdedLRUCache</h3>
+<p>we’ll start with some constant and members of the class.</p>
+<pre class=" language-cpp"><code class="prism  language-cpp">	<span class="token keyword">static</span>  <span class="token keyword">const</span>  <span class="token keyword">int</span>  kNumShardBits  <span class="token operator">=</span>  <span class="token number">4</span><span class="token punctuation">;</span>
+	<span class="token keyword">static</span>  <span class="token keyword">const</span>  <span class="token keyword">int</span>  kNumShards  <span class="token operator">=</span>  <span class="token number">1</span>  <span class="token operator">&lt;&lt;</span>  kNumShardBits<span class="token punctuation">;</span>
+</code></pre>
+<p>Defines the number of shards of the cache as <code>2^4 = 16</code> and number of bits required to represent it.</p>
+<h4 id="members-2">members</h4>
+<ul>
+<li><code>LRUCache shard_[kNumShards]</code> - The shards array of single cache instances.</li>
+<li><code>port::Mutex id_mutex_; uint64_t last_id_;</code>a clever and simple technique for avoiding collisions if the cache is meant to be used by several clients that can accidently override each other keys, before using the cache a client should ask for a unique id and prefix its keys.</li>
+</ul>
+<h3 id="choosing-a-shard">Choosing a shard</h3>
+<p>The keys are distruibuted across the shards determenistically by first hashing them which spread the bits in a random order , then shifting the hash 28 bits to the right to  which results in a number in the range of [0-15].</p>
+<pre class=" language-cpp"><code class="prism  language-cpp"><span class="token keyword">static</span>  <span class="token keyword">inline</span>  uint32_t  <span class="token function">HashSlice</span><span class="token punctuation">(</span><span class="token keyword">const</span>  Slice<span class="token operator">&amp;</span>  s<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">return</span>  <span class="token function">Hash</span><span class="token punctuation">(</span>s<span class="token punctuation">.</span><span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> s<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">static</span>  uint32_t  <span class="token function">Shard</span><span class="token punctuation">(</span>uint32_t  hash<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token keyword">return</span>  hash  <span class="token operator">&gt;&gt;</span> <span class="token punctuation">(</span><span class="token number">32</span>  <span class="token operator">-</span>  kNumShardBits<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+</code></pre>
 <blockquote>
 <p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p>
 </blockquote>
