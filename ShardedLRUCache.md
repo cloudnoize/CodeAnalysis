@@ -524,3 +524,6 @@ Handle<span class="token operator">*</span> <span class="token function">Lookup<
 </ul>
 <p>LevelDB’s cache implementation demonstrates how thoughtful design creates code that’s both efficient and maintainable. Its clean abstractions and performance optimizations make it a model worth studying for any system developer.</p>
 
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbLTE1ODc3ODE5MzVdfQ==
+-->
